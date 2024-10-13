@@ -1,3 +1,3 @@
 # SysTP
 
-A prohect for a sys course.
+A project for the Sys1 course at ENS Rennes.
