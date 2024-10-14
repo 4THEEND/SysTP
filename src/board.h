@@ -1,3 +1,9 @@
+#ifndef BOARD_H
+#define BOARD_H
+
+#define NB_ROW 3
+#define NB_COLUMN 3
+
 typedef struct{
 
 } board_t;
@@ -9,3 +15,5 @@ char board_top(board_t* b, int line, int row);
 char board_peek(board_t* b, int line, int row, int pos); // pos=0 => top
 void cell_print(board_t* b, int line, int row, int slice);
 void board_print(board_t* b, int highlighted_line); // hl_line=-1 => rien de s´electionner
+
+#endif
