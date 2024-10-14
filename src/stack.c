@@ -1,31 +1,26 @@
 #include "stack.h"
-
-struct stack{
-    int m_pos;
-    char m_tab_stack[NB_JOUEURS_MAX];
-};
-
-
-stack_t empty(){
-
-}
+#include <assert.h>
 
 void push(stack_t* pile, char elt){
-
+    assert(pile->m_pos < NB_JOUEURS_MAX);
+    pile->m_pos++;
+    pile->m_tab_stack[pile->m_pos] = elt;
 }
 
 char pop(stack_t* pile){
-    return 'c';
+    assert(pile->m_pos >= 0);
+    return pile->m_tab_stack[pile->m_pos--];
 }
 
 char peek(stack_t* pile, int pos){
-    return 'c';
+    assert(0 <= pos && pos <= pile->m_pos);
+    return pile->m_tab_stack[pos];
 }
 
 char top(stack_t* pile){
-    return 'c';
+    return peek(pile, pile->m_pos);
 }
 
 int height(stack_t* pile){
-    return 0;
+    return pile->m_pos + 1;
 }
