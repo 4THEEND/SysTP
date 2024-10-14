@@ -1,21 +1,21 @@
 #include "stack.h"
 
-void push(char elt){
+void push(stack_t* pile, char elt){
 
 }
 
-char pop(){
+char pop(stack_t* pile){
     return 'c';
 }
 
-char peek(){
+char peek(stack_t* pile){
     return 'c';
 }
 
-char top(){
+char top(stack_t* pile){
     return 'c';
 }
 
-int height(){
+int height(stack_t* pile){
     return 0;
 }

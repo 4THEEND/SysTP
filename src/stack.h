@@ -3,19 +3,13 @@
 
 #include "board.h"
 
-typedef struct
-{
-    char m_stack[NB_JOUEURS_MAX];
-    int m_pos_stack = 0;
+typedef struct stack stack_t;
 
-    void push(stack* pile, char elt);
-    char pop(stack* pile);
-    char peek(stack* pile);
-    char top(stack* pile);
-    int height(stack* pile);
-
-} stack;
-
+void push(stack_t* pile, char elt);
+char pop(stack_t* pile);
+char peek(stack_t* pile);
+char top(stack_t* pile);
+int height(stack_t* pile);
 
 #endif
 

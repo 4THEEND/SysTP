@@ -1,5 +1,11 @@
 #include "board.h"
 
+
+struct stack{
+    char m_stack[NB_JOUEURS_MAX];
+    int m_pos_stack;
+};
+
 void board_push(board_t* b, int line, int row, char ctn){
     
 }
