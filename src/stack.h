@@ -14,8 +14,8 @@ char peek(stack_t* pile, int pos);
 char top(stack_t* pile);
 int height(stack_t* pile);
 
-// Initialise an array named X of (Y*Z) stacks
-#define init_stack_array(X, Y, Z) stack_t X[Y][Z]; for(int i = 0; i < Y; i++){ for(int j = 0; j < Z; j++){ X[i][j].m_pos = -1; } }
+// Initialise an array named NAME of (X*Y) stacks
+#define init_stack_array(NAME, X, Y) stack_t NAME[X][Y]; for(int i = 0; i < X; i++){ for(int j = 0; j < Y; j++){ NAME[i][j].m_pos = -1; } }
 
 #endif
 
