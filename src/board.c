@@ -2,27 +2,27 @@
 
 
 struct board {
-    stack_t* plateau[NB_LINE][NB_ROW];
+    stack_t plateau[NB_LINE][NB_ROW];
 };
 
 void board_push(board_t* b, int line, int row, char ctn){
-    
+    push(&b[line][row], ctn);
 }
 
 char board_pop(board_t* b, int line, int row){
-    return 'a';
+    return pop(&b[line][row]);
 }
 
 int board_height(board_t* b, int line, int row){
-    return 0;
+    return height(&b[line][row]);
 }
 
 char board_top(board_t* b, int line, int row){
-    return 'a';
+    return top(&b[line][row]);
 }
 
 char board_peek(board_t* b, int line, int row, int pos){
-    return 'a';
+    return peek(&b[line][row], pos);
 }
 
 void cell_print(board_t* b, int line, int row, int slice){
