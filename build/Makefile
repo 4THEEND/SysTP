@@ -7,10 +7,13 @@ LFLAGS = -g
 
 all : prog
 
-prog : main.o
-	$(CC) $(LFLAGS) $< -o $@
+prog : main.o board.o
+	$(CC) $(LFLAGS) $^ -o $@
 
 main.o : $(SRC)/main.c
+	$(CC) $(CFLAGS) -c $<
+
+board.o : $(SRC)/board.c
 	$(CC) $(CFLAGS) -c $<
 
 .PHONY : clear
