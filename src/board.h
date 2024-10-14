@@ -1,6 +1,6 @@
-typedef struct board_t{
+typedef struct{
 
-};
+} board_t;
 
 void board_push(board_t* b, int line, int row, char ctn);
 char board_pop(board_t* b, int line, int row);
