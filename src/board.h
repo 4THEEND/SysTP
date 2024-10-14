@@ -2,9 +2,12 @@
 #define BOARD_H
 
 #define NB_ROW 3
-#define NB_COLUMN 3
+#define NB_LINE 3
+#define NB_JOUEURS_MAX 26
 
-typedef struct{
+#include "stack.h"
+
+typedef struct {
 
 } board_t;
 
