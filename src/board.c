@@ -3,6 +3,18 @@
 #include <ctype.h>
 
 
+void init_board(board_t* b){
+    for (int i = 0; i < NB_LINE; i++){
+        for (int j = 0; j < NB_ROW; j++){
+            b->board_traps[i][j] = false;
+            b->board[i][j].m_pos = -1;
+        }
+    }
+
+    //TODO : put all special cells to true in board_traps
+}
+
+
 void board_push(board_t* b, int line, int row, char ctn){
     push(&b->board[line][row], ctn);
 }
