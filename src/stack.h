@@ -5,16 +5,17 @@
 
 typedef struct
 {
-    private:
-        char m_stack[NB_JOUEURS_MAX];
-        int m_pos_stack = 0;
+    char m_stack[NB_JOUEURS_MAX];
+    int m_pos_stack = 0;
 
-    public:
-        char pop();
-        char top();
-        int height();
+    void push(char elt);
+    char pop();
+    char peek();
+    char top();
+    int height();
 
 } stack;
+
 
 #endif
 
