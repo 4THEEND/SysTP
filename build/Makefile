@@ -15,5 +15,5 @@ main.o : $(SRC)/main.c
 
 .PHONY : clear
 
-clean:
+clear:
 	rm -f *.o prog
