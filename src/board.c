@@ -1,9 +1,8 @@
 #include "board.h"
 
 
-struct stack{
-    char m_stack[NB_JOUEURS_MAX];
-    int m_pos_stack;
+struct board {
+    stack_t* plateau[NB_LINE][NB_ROW];
 };
 
 void board_push(board_t* b, int line, int row, char ctn){
