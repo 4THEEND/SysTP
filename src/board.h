@@ -2,12 +2,14 @@
 #define BOARD_H
 
 #include "stack.h"
+#include <stdbool.h>
 
 #define NB_ROW 3
 #define NB_LINE 3
 
 typedef struct{
-    stack_t plateau[NB_LINE][NB_ROW];
+    stack_t board[NB_LINE][NB_ROW];
+    bool board_traps[NB_LINE][NB_ROW];
 } board_t ;
 
 
