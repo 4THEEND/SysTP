@@ -1,7 +1,7 @@
 #include "board.h"
 
 void board_push(board_t* b, int line, int row, char ctn){
-
+    
 }
 
 char board_pop(board_t* b, int line, int row){

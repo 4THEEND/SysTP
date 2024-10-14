@@ -8,7 +8,7 @@
 #include "stack.h"
 
 typedef struct {
-
+    stack* plateau[NB_LINE][NB_ROW];
 } board_t;
 
 void board_push(board_t* b, int line, int row, char ctn);
