@@ -29,7 +29,7 @@ test.o : $(SRC)/test.c
 .PHONY : clear run test
 
 clear :
-	rm -f *.o prog
+	rm -f *.o prog prog_test
 
 run : prog
 	./prog
