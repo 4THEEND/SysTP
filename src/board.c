@@ -168,14 +168,32 @@ void board_print(board_t* b, int highlighted_line){
 
     for(int line = 0; line < NB_LINE; line++){
         for(int slice= 0; slice< 4; slice++){
-            if(slice== 0 || slice== 3){
+            if(slice == 0){
                 printf("      ");
             }
+            else if(slice== 3){
+                if(line == highlighted_line){
+                    printf("    > ");
+                }
+                else{
+                    printf("      ");
+                }
+            }
             else if(slice== 1){
-                printf("line  ");
+                if(line == highlighted_line){
+                    printf("line> ");
+                }
+                else{
+                    printf("line  ");
+                }
             }
             else{
-                printf("  %d   ",line+1);
+                if(line == highlighted_line){
+                    printf("  %d > ",line+1);
+                }
+                else{
+                    printf("  %d   ",line+1);
+                }
             }
 
             for(int row = 0; row < NB_ROW; row++){
@@ -186,4 +204,16 @@ void board_print(board_t* b, int highlighted_line){
         }
         printf("\n");
     }
+
+    printf("     ");
+    for(int i = 0; i < NB_ROW; i++){
+        printf("  row  ");
+    }
+    printf("\n");
+
+    printf("     ");
+    for(int i = 0; i < NB_ROW; i++){
+        printf("   %c   ", (char)((int)'a' + i));
+    }
+    printf("\n");
 }
