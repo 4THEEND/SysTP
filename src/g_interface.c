@@ -9,7 +9,7 @@ void run_interface(){
     }
     printf("[*] Sucessfully initialised SDL2\n");
 
-    SDL_Window* window = SDL_CreateWindow("Igel Ärgern", 0, 0 , WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+    SDL_Window* window = SDL_CreateWindow("Igel Ärgern", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (window == NULL){
         fprintf(stderr, "[*] Failed to create the window with error: %s", SDL_GetError());
     }
