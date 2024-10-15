@@ -1,6 +1,6 @@
 #ifndef G_INTERFACE_H
 #define G_INTERFACE_H
 
-void init();
+void run_interface();
 
-#endif // l1
+#endif
