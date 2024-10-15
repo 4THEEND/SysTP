@@ -10,8 +10,13 @@ void init_board(board_t* b){
             b->board[i][j].m_pos = -1;
         }
     }
-
-    //TODO : put all special cells to true in board_traps
+    /*
+    b->board_traps[0][2] = true;
+    b->board_traps[1][6] = true;
+    b->board_traps[2][4] = true;
+    b->board_traps[3][5] = true;
+    b->board_traps[4][3] = true;
+    b->board_traps[5][7] = true; */
 }
 
 
