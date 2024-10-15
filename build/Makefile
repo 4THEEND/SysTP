@@ -4,7 +4,6 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Wno-unused-parameter
 LFLAGS = -g
-LIBS = `sdl2-config --libs --cflags` -lSDL2
 
 all : prog
 
@@ -20,11 +19,8 @@ board.o : $(SRC)/board.c
 stack.o : $(SRC)/stack.c
 	$(CC) $(CFLAGS) -c $<
 
-g_interface.o : $(SRC)/g_interface.c
-	$(CC) $(CFLAGS) -c $<
-
-prog_test : test.o stack.o g_interface.o
-	$(CC) $(LFLAGS) $^ $(LIBS) -o $@
+prog_test : test.o stack.o
+	$(CC) $(LFLAGS) $^ -o $@
 
 test.o : $(SRC)/test.c
 	$(CC) $(CFLAGS) -c $<
