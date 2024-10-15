@@ -2,6 +2,10 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+void exit_sdl(){
+    SDL_Quit();
+}
+
 
 void run_interface(){
     if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0){
@@ -27,5 +31,5 @@ void run_interface(){
 
     SDL_DestroyWindow(window);
     printf("[*] Window exited sucessfully!!\n");
-    SDL_Quit();
+    exit_sdl();
 }
