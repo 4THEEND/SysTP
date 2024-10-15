@@ -148,5 +148,42 @@ void cell_print(board_t* b, int line, int row, int slice){
 }
 
 void board_print(board_t* b, int highlighted_line){
-    
+    printf("      START ");
+    for(int i = 0; i < NB_ROW - 2; i++){
+        printf("      ");
+    }
+    printf("FINISH\n\n");
+
+    printf("     ");
+    for(int i = 0; i < NB_ROW; i++){
+        printf("  row  ");
+    }
+    printf("\n");
+
+    printf("     ");
+    for(int i = 0; i < NB_ROW; i++){
+        printf("   %c   ", (char)((int)'a' + i));
+    }
+    printf("\n");
+
+    for(int line = 0; line < NB_LINE; line++){
+        for(int slice= 0; slice< 4; slice++){
+            if(slice== 0 || slice== 3){
+                printf("      ");
+            }
+            else if(slice== 1){
+                printf("line  ");
+            }
+            else{
+                printf("  %d   ",line+1);
+            }
+
+            for(int row = 0; row < NB_ROW; row++){
+                cell_print(b, line, row, slice);
+                printf("  ");
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
 }
