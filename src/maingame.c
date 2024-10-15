@@ -21,12 +21,20 @@ bool is_coordinate_valid(int colonne, int ligne){
     return is_colonne_valid && is_ligne_valid;
 }
 
+bool is_ligne_vide(board_t* b, int ligne){
+    is_empty = true;
+    for(int i = 0; i < NB_LINE; i++){
+        if(!(board_is))
+    }
+
+}
+
 int play_game(board_t* b){ //retourne le joueur gagnant
     int herissonsFinis[NB_JOUEURS];
     for(int i = 0; i< NB_JOUEURS; i++){
         herissonsFinis[i] = 0;
     }
-    int winner = -1:                                                    j
+    int winner = -1:                                                    
     while(winner = -1){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
             int resultat_de = de();
@@ -41,12 +49,20 @@ int play_game(board_t* b){ //retourne le joueur gagnant
             if(veut_bouger == 'Y'){
                 int ligne_herisson;
                 int col_herisson;
-                int objectif;
+                int ligne_objectif;
                 printf("Indiquez la ligne, puis la colonne du 
-                herisson que vous souhaitez changer de ligne, ainsi que la ligne objectif. \n ");
+                herisson que vous souhaitez changer de ligne, ainsi que la ligne ligne_objectif. \n ");
                 printf("Par exemple, pour déplacer le herisson dans la case (3,2) dans la ligne 4, on écrit 3 2 4. \n");
-                scanf("%d %d %d", ligne_herisson, col_herisson, objectif);
+                scanf("%d %d %d", ligne_herisson, col_herisson, ligne_objectif);
+                while( !(is_coordinate_valid(ligne_herisson, col_herisson)) || !(is_coordinate_valid(ligne_objectif, 0)) 
+                    || board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a') ){
+                    printf("Veuillez à donner des coordonnées correctes, et choisir un de vos hérissons. \n");
+                    scanf("%d %d %d", ligne_herisson, col_herisson, ligne_objectif);
+                }
+                board_pop(b, ligne_herisson, col_herisson);
+                board_push(b, ligne_objectif, col_herisson);
             }
+
         }
 
     }
