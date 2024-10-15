@@ -19,10 +19,20 @@ board.o : $(SRC)/board.c
 stack.o : $(SRC)/stack.c
 	$(CC) $(CFLAGS) -c $<
 
-.PHONY : clear run
+
+prog_test : test.o stack.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+test.o : $(SRC)/test.c
+	$(CC) $(CFLAGS) -c $<
+
+.PHONY : clear run test
 
 clear :
 	rm -f *.o prog
 
 run : prog
 	./prog
+
+test : prog_test
+	./prog_test
