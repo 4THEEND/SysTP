@@ -8,6 +8,12 @@ void test_stack(void){
     stack_t s1 = {.m_pos = -1};
     push(&s1, 'c');
     assert(top(&s1) == 'c');
+    push(&s1, 'b');
+    push(&s1, 'e');
+    assert(peek(&s1, 2) == 'c');
+    assert(peek(&s1, 1) == 'b');
+    assert(pop(&s1) == 'e');
+    assert(top(&s1) == 'b');
 }
 
 int main(){
