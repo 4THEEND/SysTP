@@ -7,6 +7,8 @@
 #define NB_ROW 3
 #define NB_LINE 3
 #define NB_TRAP 6
+#define NB_JOUEURS 2
+#define NB_HERISSONS 2
 
 typedef struct{
     stack_t board[NB_LINE][NB_ROW];
