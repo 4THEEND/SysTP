@@ -14,11 +14,18 @@ void run_interface(){
         fprintf(stderr, "[*] Failed to create the window with error: %s", SDL_GetError());
     }
 
-    while(true){
-        SDL_ShowWindow(window);
-    }
+    SDL_ShowWindow(window);
+    SDL_Event event;
+    bool quit = false;
+    while(!quit)
+    {
+        SDL_WaitEvent(&event);
+        if(event.type == SDL_QUIT){
+            quit = true;
+        }
+    }   
 
+    SDL_DestroyWindow(window);
     printf("[*] Window exited sucessfully!!\n");
-
     SDL_Quit();
 }
