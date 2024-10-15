@@ -4,19 +4,18 @@
 
 
 void init_board(board_t* b){
+    static const int traps_coords[NB_TRAP][2] = {{0, 2}, {1, 6}, {2, 4}, {3, 5}, {4, 3}, {5, 7}};
     for (int i = 0; i < NB_LINE; i++){
         for (int j = 0; j < NB_ROW; j++){
             b->board_traps[i][j] = false;
             b->board[i][j].m_pos = -1;
         }
     }
-    /*
-    b->board_traps[0][2] = true;
-    b->board_traps[1][6] = true;
-    b->board_traps[2][4] = true;
-    b->board_traps[3][5] = true;
-    b->board_traps[4][3] = true;
-    b->board_traps[5][7] = true; */
+    for (int i = 0; i < NB_TRAP; i++){
+        if(traps_coords[i][0] < NB_LINE && traps_coords[i][1] < NB_ROW){
+            b->board_traps[traps_coords[i][0]][traps_coords[i][1]] = true;
+        }
+    }
 }
 
 
@@ -42,7 +41,7 @@ char board_peek(board_t* b, int line, int row, int pos){
 
 void cell_print_north(board_t* b, int line, int row, int slice){
     if (b->board_traps[line][row]){
-        printf( "VVV ");
+        printf( " VVV ");
     }
     else{
         printf(" --- ");
