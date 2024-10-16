@@ -7,7 +7,7 @@ LFLAGS = -g
 
 all : prog
 
-prog : main.o board.o stack.o maingaime.o
+prog : main.o board.o stack.o maingame.o
 	$(CC) $(LFLAGS) $^ -o $@
 
 main.o : $(SRC)/main.c
@@ -19,7 +19,7 @@ board.o : $(SRC)/board.c
 stack.o : $(SRC)/stack.c
 	$(CC) $(CFLAGS) -c $<
 
-maingaime.o : $(SRC)/maingaime.c
+maingame.o : $(SRC)/maingame.c
 	$(CC) $(CFLAGS) -c $<
 
 prog_test : test.o stack.o

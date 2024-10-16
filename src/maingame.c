@@ -37,7 +37,7 @@ int play_game(board_t* b){ //retourne le joueur gagnant
         herissonsFinis[i] = 0;
     }
     int winner = -1;                                                
-    while(winner = -1){
+    while(winner == -1){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
             int resultat_de = de();
             printf("C'est le tour au joueur %c !", (char)((int)'a' + joueur));
@@ -85,5 +85,5 @@ int play_game(board_t* b){ //retourne le joueur gagnant
 
     }
 
-
+    return 0;
 }
