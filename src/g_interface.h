@@ -21,5 +21,9 @@ SDL_Color burgundy_color = {129, 17, 17, 255};
 
 void run_game();
 void display_board(board_t* b, int cursor_row, int cursol_line);
+void DrawCircle(SDL_Renderer * renderer, int centreX, int centreY, int radius); 
+/* Mindpoint Circle Algorithm (found on stackoverflow) 
+I'll try to implement it myself if I have enough time
+*/
 
 #endif
