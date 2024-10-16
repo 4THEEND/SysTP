@@ -1,5 +1,6 @@
 #include "g_interface.h"
 #include "board.h"
+#include "maingame.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
@@ -70,6 +71,13 @@ void run_game(){
         exit_sdl(NB_IMAGES, images_tab);
     }
 
+
+    board_t board;
+    init_board(&board);
+    initialize_game(&board);
+    int row = 0;
+    int line = 0;
+
     SDL_Event event;
     bool quit = false;
     while(!quit)
@@ -81,10 +89,24 @@ void run_game(){
                     switch (event.key.keysym.sym)
                     {
                         case SDLK_UP:
-                            printf("Touche haut enfoncée\n");
+                            if (line > 0)
+                                line--;
+                            printf("Position : %d %d\n", row, line);
                             break;
                         case SDLK_DOWN:
-                            printf("Touche bas enfoncée\n");
+                            if (line < NB_LINE - 1)
+                                line++;
+                            printf("Position : %d %d\n", row, line);
+                            break;
+                        case SDLK_LEFT:
+                            if (row > 0)
+                                row--;
+                            printf("Position : %d %d\n", row, line);
+                            break;
+                        case SDLK_RIGHT:
+                            if (row < NB_ROW - 1)
+                                row++;
+                            printf("Position : %d %d\n", row, line);
                             break;
                         case SDLK_SPACE:
                             printf("Touche espace enfoncée\n");
@@ -98,9 +120,6 @@ void run_game(){
         }
         SDL_UpdateWindowSurface(window);
     }   
-
-    board_t board;
-    init_board(&board);
 
     SDL_DestroyWindow(window);
     printf("[*] Window exited sucessfully!!\n");

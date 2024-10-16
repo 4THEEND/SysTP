@@ -11,7 +11,7 @@ all : prog
 prog : main.o board.o stack.o maingame.o
 	$(CC) $(LFLAGS) $^ -o $@
 
-prog_test : test.o stack.o g_interface.o board.o
+prog_test : test.o stack.o g_interface.o board.o maingame.o
 	$(CC) $(LFLAGS) $^ $(LIBS) -o $@
 
 %.o : $(SRC)/%.c
