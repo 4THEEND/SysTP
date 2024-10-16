@@ -23,9 +23,10 @@ void run_interface(){
     bool quit = false;
     while(!quit)
     {
-        SDL_WaitEvent(&event);
-        if(event.type == SDL_QUIT){
-            quit = true;
+        while(SDL_PollEvent(&event)){
+            if(event.type == SDL_QUIT){
+                quit = true;
+            }
         }
     }   
 
