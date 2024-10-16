@@ -5,6 +5,7 @@
 
 int de();
 void initialize_game(board_t* b);
+bool peut_joueur_deplacer(board_t* b, char joueur);
 int get_winner(int* herissonFinis);
 bool is_coordinate_valid(int colonne, int ligne);
 bool is_ligne_vide(board_t* b, int ligne);

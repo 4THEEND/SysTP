@@ -62,6 +62,18 @@ bool is_ligne_vide(board_t* b, int ligne){
     return is_empty;
 }
 
+bool peut_joueur_deplacer(board_t* b, char joueur){
+    bool peut_il = false;
+    for(int ligne = 0; ligne < NB_LINE; ligne++){
+        for(int col = 0; col < NB_ROW; col++){
+            if((board_height(b, ligne, col) != 0) && (board_top(b, ligne, col) == joueur)){
+                peut_il = true;
+            }
+        }
+    }
+    return peut_il;
+}
+
 int play_game(board_t* b){ //retourne le joueur gagnant
     int herissonsFinis[NB_JOUEURS];
     for(int i = 0; i< NB_JOUEURS; i++){
@@ -75,13 +87,19 @@ int play_game(board_t* b){ //retourne le joueur gagnant
             printf("C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
             printf("Vous avez tiré un %d !\n", resultat_de + 1);
             char veut_bouger;
-            printf("Voulez-vous bouger un hérisson de ligne ? (Y/N): ");
-            scanf("%c", &veut_bouger);
-            clean_input_buffer();
-            while(veut_bouger != 'Y' && veut_bouger != 'N'){
-                printf("Veuillez donner une réponse correcte, Y ou N: ");
+            if(peut_joueur_deplacer(b, (char)((int)'a' + joueur))){
+                printf("Voulez-vous bouger un hérisson de ligne ? (Y/N): ");
                 scanf("%c", &veut_bouger);
                 clean_input_buffer();
+                while(veut_bouger != 'Y' && veut_bouger != 'N'){
+                    printf("Veuillez donner une réponse correcte, Y ou N: ");
+                    scanf("%c", &veut_bouger);
+                   clean_input_buffer();
+                }
+            }
+            else {
+                printf("Vous ne pouvez changer de ligne aucun hérisson.\n");
+                veut_bouger = 'N';
             }
             if(veut_bouger == 'Y'){
                 int ligne_herisson;
@@ -92,7 +110,7 @@ int play_game(board_t* b){ //retourne le joueur gagnant
                 scanf("%d %d %d", &ligne_herisson, &col_herisson, &ligne_objectif);
                 clean_input_buffer();
                 while( !(is_coordinate_valid(ligne_herisson, col_herisson)) || !(is_coordinate_valid(ligne_objectif, 1)) 
-                    || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a')) ){
+                    || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a')) ){
                     printf("Veuillez à donner des coordonnées correctes, et choisir un de vos hérissons. \n");
                     scanf("%d %d %d", &ligne_herisson, &col_herisson, &ligne_objectif);
                     clean_input_buffer();
