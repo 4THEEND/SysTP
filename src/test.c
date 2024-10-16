@@ -1,4 +1,5 @@
 #include "stack.h"
+#include "g_interface.h"
 #include <assert.h>
 #include <stdio.h>
 #include <time.h>
@@ -18,6 +19,7 @@ void test_stack(void){
 
 int main(){
     test_stack();
+    run_interface();
 
     printf("Tous les test se sont bien déroulés :)\n");
     return 0;
