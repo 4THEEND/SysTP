@@ -19,6 +19,7 @@
 
 
 void run_game();
+void exit_sdl(int nb_free, SDL_Surface* to_free[], SDL_Window* window, SDL_Renderer* render);
 void display_board(board_t* b, SDL_Window* window, SDL_Renderer* cursor_renderer, int cursor_row, int cursol_line);
 void DrawCircle(SDL_Renderer * renderer, int centreX, int centreY, int radius); 
 /* Mindpoint Circle Algorithm (found on stackoverflow) 
