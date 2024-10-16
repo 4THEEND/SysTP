@@ -78,6 +78,9 @@ void run_game(){
     int row = 0;
     int line = 0;
 
+    display_board(&board, row, line); // first update before scanning for events
+    SDL_UpdateWindowSurface(window); 
+
     SDL_Event event;
     bool quit = false;
     while(!quit)
@@ -117,8 +120,9 @@ void run_game(){
                     quit = true;
                     break;
             }
+            display_board(&board, row, line);
+            SDL_UpdateWindowSurface(window);
         }
-        SDL_UpdateWindowSurface(window);
     }   
 
     SDL_DestroyWindow(window);
@@ -127,6 +131,6 @@ void run_game(){
 }
 
 
-void display_board(board_t* b){
-
+void display_board(board_t* b, int cursor_row, int cursol_line){
+    
 }

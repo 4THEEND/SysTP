@@ -17,8 +17,9 @@
 #define GREEN_HG_BMP_PATH "../images/green.bmp"
 
 
+SDL_Color burgundy_color = {129, 17, 17, 255};
 
 void run_game();
-void display_board(board_t* b);
+void display_board(board_t* b, int cursor_row, int cursol_line);
 
 #endif
