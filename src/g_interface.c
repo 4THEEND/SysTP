@@ -28,13 +28,26 @@ void run_game(){
     while(!quit)
     {
         while(SDL_PollEvent(&event)){
-            if(event.type == SDL_QUIT){
-                quit = true;
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym)
+                    {
+                        case SDLK_UP:
+                            printf("Touche haut enfoncée\n");
+                            break;
+                        case SDLK_DOWN:
+                            printf("Touche bas enfoncée\n");
+                            break;
+                        case SDLK_SPACE:
+                            printf("Touche espace enfoncée\n");
+                            break;
+                    }
+                    break;
+                case SDL_QUIT:
+                    quit = true;
+                    break;
             }
-            else if(event.type == SDL_KEYDOWN){
-                printf("Touche enfoncée\n");
-            }
-            display_board(&board);
         }
     }   
 
