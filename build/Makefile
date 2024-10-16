@@ -11,31 +11,18 @@ all : prog
 prog : main.o board.o stack.o maingame.o
 	$(CC) $(LFLAGS) $^ -o $@
 
-main.o : $(SRC)/main.c 
-	$(CC) $(CFLAGS) -c $<
-
-board.o : $(SRC)/board.c
-	$(CC) $(CFLAGS) -c $<
-
-stack.o : $(SRC)/stack.c
-	$(CC) $(CFLAGS) -c $<
-
-maingame.o : $(SRC)/maingame.c
-	$(CC) $(CFLAGS) -c $<
-
-g_interface.o : $(SRC)/g_interface.c
-	$(CC) $(CFLAGS) -c $<
-
 prog_test : test.o stack.o g_interface.o
 	$(CC) $(LFLAGS) $^ $(LIBS) -o $@
 
-test.o : $(SRC)/test.c
+%.o : $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $<
 
 
 
 
 .PHONY : clear run test
+
+.SUFFIXES: .c .o
 
 clear :
 	rm -f *.o prog prog_test
