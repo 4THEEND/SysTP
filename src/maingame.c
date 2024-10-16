@@ -74,9 +74,20 @@ bool peut_joueur_deplacer(board_t* b, char joueur){
     return peut_il;
 }
 
+
+bool allow_trapped_move(board_t* b, int ligne, int colonne){
+    bool are_empty = true;
+    for(int col = 0; col < colonne; col++){
+        if(board_height(b, ligne, col) != 0){
+            are_empty = false;
+        }
+    }
+    return are_empty || !(b->board_traps[ligne][colonne]);
+}
+
 int play_game(board_t* b){ //retourne le joueur gagnant
     int herissonsFinis[NB_JOUEURS];
-    for(int i = 0; i< NB_JOUEURS; i++){
+    for(int i = 0; i < NB_JOUEURS; i++){
         herissonsFinis[i] = 0;
     }
     int winner = -1;                                                
@@ -103,16 +114,20 @@ int play_game(board_t* b){ //retourne le joueur gagnant
             }
             if(veut_bouger == 'Y'){
                 int ligne_herisson;
-                int col_herisson;
+                char col_herisson_tmp;
                 int ligne_objectif;
                 printf("Indiquez la ligne, puis la colonne du herisson que vous souhaitez changer de ligne, ainsi que la ligne ligne_objectif. \n ");
-                printf("Par exemple, pour déplacer le herisson dans la case (3,2) dans la ligne 4, on écrit 3 2 4. \n");
-                scanf("%d %d %d", &ligne_herisson, &col_herisson, &ligne_objectif);
+                printf("Par exemple, pour déplacer le herisson dans la case (3,b) dans la ligne 4, on écrit 3 b 4. \n");
+                scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
+                int col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
                 clean_input_buffer();
                 while( !(is_coordinate_valid(ligne_herisson, col_herisson)) || !(is_coordinate_valid(ligne_objectif, 1)) 
-                    || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a')) ){
+                    || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) 
+                    || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a'))
+                    || !(allow_trapped_move(b, ligne_herisson - 1, col_herisson - 1)) ){
                     printf("Veuillez à donner des coordonnées correctes, et choisir un de vos hérissons. \n");
-                    scanf("%d %d %d", &ligne_herisson, &col_herisson, &ligne_objectif);
+                    scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
+                    col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
                     clean_input_buffer();
                 }
                 board_pop(b, ligne_herisson - 1, col_herisson - 1);
@@ -122,13 +137,16 @@ int play_game(board_t* b){ //retourne le joueur gagnant
                 printf("Vous ne pouvez bouger aucun hérisson, donc vous devez passer votre tour. \n");
             }
             else{
-                int colonne_deplace;
-                printf("Choisissez une colonne: ");
-                scanf("%d", &colonne_deplace);
+                char colonne_deplace_tmp;
+                printf("Choisissez une colonne (une lettre): ");
+                scanf("%c", &colonne_deplace_tmp);
+                int colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
                 clean_input_buffer();
-                while(!(is_coordinate_valid(1, colonne_deplace)) || board_height(b, resultat_de, colonne_deplace - 1) == 0){
-                    printf("Veuillez saisir une colonne valide non vide: \n");
-                    scanf("%d", &colonne_deplace);
+                while(!(is_coordinate_valid(1, colonne_deplace)) || board_height(b, resultat_de, colonne_deplace - 1) == 0
+                || !(allow_trapped_move(b, resultat_de, colonne_deplace - 1))){
+                    printf("Veuillez saisir une colonne valide non vide sans piège ou avec un piège désactivé: \n");
+                    scanf("%c", &colonne_deplace_tmp);
+                    colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
                     clean_input_buffer();
                 }
                 char player = board_pop(b, resultat_de, colonne_deplace - 1);
