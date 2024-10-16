@@ -3,8 +3,12 @@
 
 #include "board.h"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 1500
+#define WINDOW_HEIGHT 1032
+
+#define BOARD_BMP_PATH "../images/board.bmp"
+
+
 
 void run_game();
 void display_board(board_t* b);
