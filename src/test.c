@@ -19,7 +19,8 @@ void test_stack(void){
 
 int main(){
     test_stack();
-    run_interface();
+
+    run_game();
 
     printf("Tous les test se sont bien déroulés :)\n");
     return 0;

@@ -1,4 +1,5 @@
 #include "g_interface.h"
+#include "board.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
@@ -7,7 +8,7 @@ void exit_sdl(){
 }
 
 
-void run_interface(){
+void run_game(){
     if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0){
         fprintf(stderr, "[*] Failed to intialise SDL2: %s", SDL_GetError());
     }
@@ -18,6 +19,9 @@ void run_interface(){
         fprintf(stderr, "[*] Failed to create the window with error: %s", SDL_GetError());
     }
 
+    board_t board;
+    init_board(&board);
+
     SDL_ShowWindow(window);
     SDL_Event event;
     bool quit = false;
@@ -27,10 +31,19 @@ void run_interface(){
             if(event.type == SDL_QUIT){
                 quit = true;
             }
+            else if(event.type == SDL_KEYDOWN){
+                printf("Touche enfoncée\n");
+            }
+            display_board(&board);
         }
     }   
 
     SDL_DestroyWindow(window);
     printf("[*] Window exited sucessfully!!\n");
     exit_sdl();
+}
+
+
+void display_board(board_t* b){
+
 }
