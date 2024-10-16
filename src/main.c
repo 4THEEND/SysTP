@@ -8,6 +8,7 @@ int main(int argc, char** argv){
     srand(time(NULL));
     board_t board;
     init_board(&board);
-    board_print(&board, 2);
+    initialize_game(&board);
+    printf("Le grand gagnant est %d !!!", play_game(&board));
     return 0;
 }
