@@ -18,11 +18,7 @@ prog_test : test.o stack.o g_interface.o
 	$(CC) $(CFLAGS) -c $<
 
 
-
-
 .PHONY : clear run test
-
-.SUFFIXES: .c .o
 
 clear :
 	rm -f *.o prog prog_test
