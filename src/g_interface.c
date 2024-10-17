@@ -17,6 +17,21 @@ void exit_sdl(int nb_free, SDL_Surface* to_free[], SDL_Window* window, SDL_Rende
     exit(EXIT_SUCCESS);
 }
 
+SDL_Texture* load_image(const char* path, SDL_Renderer* render, SDL_Window* window){
+    SDL_Surface* image = SDL_LoadBMP(path);
+    if (image == NULL){
+        fprintf(stderr, "[*] Failed to open %s with error : %s\n", path, SDL_GetError());
+        exit_sdl(0, NULL, window, render);
+    }
+    SDL_Texture* image_texture = SDL_CreateTextureFromSurface(render, image);
+    if (image_texture == NULL){
+        fprintf(stderr, "[*] Failed to open %s with error : %s\n", path, SDL_GetError());
+        exit_sdl(0, NULL, window, render);
+    }
+    SDL_FreeSurface(image);
+    return image_texture;
+}
+
 
 void run_game(){
     if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0){
@@ -32,54 +47,32 @@ void run_game(){
     printf("[*] Sucessfully created the window\n");
     SDL_ShowWindow(window);
 
-    SDL_Renderer* cursor_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (cursor_renderer == NULL){
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL){
         fprintf(stderr, "[*] Failed to create the renderer with error: %s\n", SDL_GetError());
         exit_sdl(0, NULL, window, NULL);
     }
     printf("[*] Sucessfully created the renderer\n");
 
-    SDL_Surface* images_tab[NB_IMAGES] = {NULL, NULL, NULL, NULL, NULL};
+    SDL_Texture* images_tab[NB_IMAGES] = {NULL, NULL, NULL, NULL, NULL};
     /*In images tab we have 
     0 : board image
     1 : red hedgehog image
     2 : blue hedgehog image
     3 : green hedgehog image
-    4 : pink ? hedgehog image
+    4 : purple hedgehog image
     */
 
-    images_tab[0] = SDL_LoadBMP(BOARD_BMP_PATH);
-    if (images_tab[0] == NULL){
-        fprintf(stderr, "[*] Failed to open the board image with error : %s\n", SDL_GetError());
-        exit_sdl(0, NULL, window, cursor_renderer);
-    }
-    printf("[*] Sucessfully opened the board image\n");
-
-    images_tab[1] = SDL_LoadBMP(RED_HG_BMP_PATH);
-    if (images_tab[1] == NULL){
-        fprintf(stderr, "[*] Failed to open the red hedgehog image with error : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, images_tab, window, cursor_renderer);
-    }
-    printf("[*] Sucessfully opened the red hedgehog image\n");
-
-    images_tab[2] = SDL_LoadBMP(BLUE_HG_BMP_PATH);
-    if (images_tab[2] == NULL){
-        fprintf(stderr, "[*] Failed to open the blue hedgehog image with error : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, images_tab, window, cursor_renderer);
-    }
-    printf("[*] Sucessfully opened the blue hedgehog image\n");
-
-    images_tab[3] = SDL_LoadBMP(GREEN_HG_BMP_PATH);
-    if (images_tab[3] == NULL){
-        fprintf(stderr, "[*] Failed to open the green hedgehog image with error : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, images_tab, window, cursor_renderer);
-    }
-    printf("[*] Sucessfully opened the green hedgehog image\n");
+    images_tab[0] = load_image(BOARD_BMP_PATH, renderer, window); 
+    images_tab[1] = load_image(RED_HG_BMP_PATH, renderer, window);
+    images_tab[2] = load_image(BLUE_HG_BMP_PATH, renderer, window);
+    images_tab[3] = load_image(GREEN_HG_BMP_PATH, renderer, window);
+    images_tab[4] = load_image(PURPLE_HG_BMP_PATH, renderer, window);
 
     SDL_Rect board_pos = {0, 0, 0, 0};
-    if (SDL_BlitSurface(images_tab[0], NULL, SDL_GetWindowSurface(window), &board_pos) != 0){
+    if (SDL_RenderCopy(renderer, images_tab[0], NULL, &board_pos) != 0){
         fprintf(stderr, "[*] Failed to bind the board image to the window : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, images_tab, window, cursor_renderer);
+        exit_sdl(NB_IMAGES, images_tab, window, renderer);
     }
 
 
@@ -89,7 +82,7 @@ void run_game(){
     int row = 0;
     int line = 0;
 
-    display_board(&board, window, cursor_renderer, row, line); // first update before scanning for events
+    display_board(&board, window, renderer, row, line, images_tab); // first update before scanning for events
     SDL_UpdateWindowSurface(window); 
 
     SDL_Event event;
@@ -131,7 +124,7 @@ void run_game(){
                     quit = true;
                     break;
             }
-            display_board(&board, window, cursor_renderer,row, line);
+            display_board(&board, window, renderer,row, line, images_tab);
             SDL_UpdateWindowSurface(window);
             
         }
@@ -139,12 +132,29 @@ void run_game(){
 
     SDL_DestroyWindow(window);
     printf("[*] Window exited sucessfully!!\n");
-    exit_sdl(NB_IMAGES, images_tab, window, cursor_renderer);
+    exit_sdl(NB_IMAGES, images_tab, window, renderer);
 }
 
 
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* cursor_renderer, int cursor_row, int cursol_line){
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* cursor_renderer, int cursor_row, int cursol_line, SDL_Surface* imgs[]){
+    /*if  (SDL_SetRenderDrawColor(cursor_renderer, 0, 0, 0, 0) != 0){
+        fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, cursor_renderer);
+    }
+
+    if(SDL_RenderClear(cursor_renderer) != 0)
+    {
+        fprintf(stderr, "[*] Failed to update the renderer : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, cursor_renderer);
+    }
+    
     static const SDL_Color burgundy_color = {129, 17, 17, 255};
+    if  (SDL_SetRenderDrawColor(cursor_renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){
+        fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, cursor_renderer);
+    }
+    DrawCircle(cursor_renderer, 100 + 150*cursor_row, 100 + 150*cursol_line, 50);
+    SDL_RenderPresent(cursor_renderer);*/
 }
 
 

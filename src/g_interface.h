@@ -16,11 +16,12 @@
 #define RED_HG_BMP_PATH "../images/red.bmp"
 #define BLUE_HG_BMP_PATH "../images/blue.bmp"
 #define GREEN_HG_BMP_PATH "../images/green.bmp"
+#define PURPLE_HG_BMP_PATH "../images/purple.bmp"
 
 
 void run_game();
 void exit_sdl(int nb_free, SDL_Surface* to_free[], SDL_Window* window, SDL_Renderer* render);
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* cursor_renderer, int cursor_row, int cursol_line);
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* cursor_renderer, int cursor_row, int cursol_line, SDL_Surface* imgs[]);
 void DrawCircle(SDL_Renderer * renderer, int centreX, int centreY, int radius); 
 /* Mindpoint Circle Algorithm (found on stackoverflow) 
 I'll try to implement it myself if I have enough time
