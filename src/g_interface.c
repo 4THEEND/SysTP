@@ -6,6 +6,15 @@
 #include <time.h>
 #include <assert.h>
 
+
+char getNextPlayer(char player){
+    if (player == 'a' + NB_JOUEURS - 1){
+        return 'a';
+    }
+    return player + 1;
+}
+
+
 void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Renderer* render){
     for (int i = 0; i < nb_free; i++){
         if (to_free[i] != NULL)
@@ -114,8 +123,11 @@ void run_game(){
                                 row++;
                             break;
                         case SDLK_SPACE:
-                            printf("Touche espace enfoncée\n");
-                            move_hedgehog(&board, line, row, line, row + 1, player);
+                            if (row + 1 < NB_ROW){
+                                if (move_hedgehog(&board, line, row, line, row + 1, player)){
+                                    player = getNextPlayer(player);
+                                }
+                            }
                             break;
                     }
                     break;
@@ -124,8 +136,6 @@ void run_game(){
                     break;
             }
             display_board(&board, window, renderer,row, line, images_tab);
-            SDL_UpdateWindowSurface(window);
-            
         }
     }   
 
@@ -135,11 +145,13 @@ void run_game(){
 }
 
 
-void move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest, char player){
+bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest, char player){
     assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
     if (board_height(b, line_src, row_src) > 0 && board_top(b, line_src, row_src) == player){
         board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
+        return true;
     }
+    return false;
 }
 
 
@@ -180,6 +192,7 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
         fprintf(stderr, "[*] Failed to bind the board image to the window : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
     }
+
     for (int i = 0; i < NB_LINE; i++){
         for(int j = 0; j < NB_ROW; j++){
             if (board_height(b, i, j) > 2){
@@ -196,7 +209,7 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
             }
         }
     }
-    SDL_RenderPresent(renderer);
+
     if  (SDL_SetRenderDrawColor(renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){
         fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
