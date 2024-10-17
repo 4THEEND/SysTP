@@ -115,7 +115,7 @@ void run_game(){
                             break;
                         case SDLK_SPACE:
                             printf("Touche espace enfoncée\n");
-                            move_hedgehog(&board, line, row, line, row + 1);
+                            move_hedgehog(&board, line, row, line, row + 1, player);
                             break;
                     }
                     break;
@@ -135,9 +135,9 @@ void run_game(){
 }
 
 
-void move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest){
+void move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest, char player){
     assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
-    if (board_height(b, line_src, row_src) > 0){
+    if (board_height(b, line_src, row_src) > 0 && board_top(b, line_src, row_src) == player){
         board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
     }
 }
@@ -162,7 +162,7 @@ void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, in
     SDL_Rect hg_pos;
     hg_pos.h = HEDGEHOG_HEIGHT;
     hg_pos.w = HEDGEHOG_WIDTH;
-    hg_pos.x = 130 + 125*j - step*pos; // column
+    hg_pos.x = 130 + 140*j - step*pos; // column
     hg_pos.y = 130 + 125*i; // line
     if (SDL_RenderCopy(renderer, imgs[board_peek(b, i, j, pos) - 'a' + 1], NULL, &hg_pos)){
         fprintf(stderr, "[*] Failed to render an hedgehog : %s\n", SDL_GetError());
