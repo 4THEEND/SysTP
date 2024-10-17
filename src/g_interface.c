@@ -3,6 +3,8 @@
 #include "maingame.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include <time.h>
+#include <assert.h>
 
 void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Renderer* render){
     for (int i = 0; i < nb_free; i++){
@@ -34,6 +36,8 @@ SDL_Texture* load_image(const char* path, SDL_Renderer* render, SDL_Window* wind
 
 
 void run_game(){
+    srand(time(NULL));
+
     if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0){
         fprintf(stderr, "[*] Failed to intialise SDL2: %s\n", SDL_GetError());
     }
@@ -138,6 +142,22 @@ void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* img
     }
 }
 
+
+void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], int pos){
+    static const int step = 15;
+
+    SDL_Rect hg_pos;
+    hg_pos.h = HEDGEHOG_HEIGHT;
+    hg_pos.w = HEDGEHOG_WIDTH;
+    hg_pos.x = 130 + 125*j - step*pos; // column
+    hg_pos.y = 130 + 125*i; // line
+    if (SDL_RenderCopy(renderer, imgs[board_peek(b, i, j, pos) - 'a' + 1], NULL, &hg_pos)){
+        fprintf(stderr, "[*] Failed to render an hedgehog : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
+}
+
+
 void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[]){
     static const SDL_Color burgundy_color = {129, 17, 17, 255};
 
@@ -146,6 +166,22 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
     if (SDL_RenderCopy(renderer, imgs[0], NULL, NULL) != 0){
         fprintf(stderr, "[*] Failed to bind the board image to the window : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
+    for (int i = 0; i < NB_LINE; i++){
+        for(int j = 0; j < NB_ROW; j++){
+            if (board_height(b, i, j) > 2){
+                display_hedgehog(b, window, renderer, i, j, imgs, 2);
+                display_hedgehog(b, window, renderer, i, j, imgs, 1);
+                display_hedgehog(b, window, renderer, i, j, imgs, 0);
+            }
+            else if (board_height(b, i, j) == 2){
+                display_hedgehog(b, window, renderer, i, j, imgs, 1);
+                display_hedgehog(b, window, renderer, i, j, imgs, 0);
+            }
+            else if(board_height(b, i, j) == 1){
+                display_hedgehog(b, window, renderer, i, j, imgs, 0);
+            }
+        }
     }
     SDL_RenderPresent(renderer);
     if  (SDL_SetRenderDrawColor(renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){

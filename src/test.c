@@ -2,7 +2,6 @@
 #include "g_interface.h"
 #include <assert.h>
 #include <stdio.h>
-#include <time.h>
 
 
 void test_stack(void){
