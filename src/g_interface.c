@@ -86,6 +86,9 @@ void run_game(){
 
     SDL_Event event;
     bool quit = false;
+
+    char player = 'a';
+    
     while(!quit)
     {
         while(SDL_PollEvent(&event)){
@@ -112,6 +115,7 @@ void run_game(){
                             break;
                         case SDLK_SPACE:
                             printf("Touche espace enfoncée\n");
+                            move_hedgehog(&board, line, row, line, row + 1);
                             break;
                     }
                     break;
@@ -129,6 +133,15 @@ void run_game(){
     printf("[*] Window exited sucessfully!!\n");
     exit_sdl(NB_IMAGES, images_tab, window, renderer);
 }
+
+
+void move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest){
+    assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
+    if (board_height(b, line_src, row_src) > 0){
+        board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
+    }
+}
+
 
 void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* imgs[]){
     if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0) != 0){
