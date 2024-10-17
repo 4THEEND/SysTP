@@ -4,10 +4,10 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
-void exit_sdl(int nb_free, SDL_Surface* to_free[], SDL_Window* window, SDL_Renderer* render){
+void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Renderer* render){
     for (int i = 0; i < nb_free; i++){
         if (to_free[i] != NULL)
-            SDL_FreeSurface(to_free[i]);
+            SDL_DestroyTexture(to_free[i]);
     }
     if (render != NULL)
         SDL_DestroyRenderer(render);
@@ -54,13 +54,17 @@ void run_game(){
     }
     printf("[*] Sucessfully created the renderer\n");
 
-    SDL_Texture* images_tab[NB_IMAGES] = {NULL, NULL, NULL, NULL, NULL};
+    SDL_Texture* images_tab[NB_IMAGES] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     /*In images tab we have 
     0 : board image
     1 : red hedgehog image
     2 : blue hedgehog image
     3 : green hedgehog image
     4 : purple hedgehog image
+    5 : purple token image
+    6 : grenn token image
+    7 : blue token image
+    8 : red token image
     */
 
     images_tab[0] = load_image(BOARD_BMP_PATH, renderer, window); 
@@ -69,21 +73,12 @@ void run_game(){
     images_tab[3] = load_image(GREEN_HG_BMP_PATH, renderer, window);
     images_tab[4] = load_image(PURPLE_HG_BMP_PATH, renderer, window);
 
-    SDL_Rect board_pos = {0, 0, 0, 0};
-    if (SDL_RenderCopy(renderer, images_tab[0], NULL, &board_pos) != 0){
-        fprintf(stderr, "[*] Failed to bind the board image to the window : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, images_tab, window, renderer);
-    }
-
 
     board_t board;
     init_board(&board);
     initialize_game(&board);
     int row = 0;
     int line = 0;
-
-    display_board(&board, window, renderer, row, line, images_tab); // first update before scanning for events
-    SDL_UpdateWindowSurface(window); 
 
     SDL_Event event;
     bool quit = false;
@@ -98,22 +93,18 @@ void run_game(){
                         case SDLK_UP:
                             if (line > 0)
                                 line--;
-                            printf("Position : %d %d\n", row, line);
                             break;
                         case SDLK_DOWN:
                             if (line < NB_LINE - 1)
                                 line++;
-                            printf("Position : %d %d\n", row, line);
                             break;
                         case SDLK_LEFT:
                             if (row > 0)
                                 row--;
-                            printf("Position : %d %d\n", row, line);
                             break;
                         case SDLK_RIGHT:
                             if (row < NB_ROW - 1)
                                 row++;
-                            printf("Position : %d %d\n", row, line);
                             break;
                         case SDLK_SPACE:
                             printf("Touche espace enfoncée\n");
@@ -135,26 +126,34 @@ void run_game(){
     exit_sdl(NB_IMAGES, images_tab, window, renderer);
 }
 
-
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* cursor_renderer, int cursor_row, int cursol_line, SDL_Surface* imgs[]){
-    /*if  (SDL_SetRenderDrawColor(cursor_renderer, 0, 0, 0, 0) != 0){
-        fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, imgs, window, cursor_renderer);
+void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* imgs[]){
+    if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0) != 0){
+        fprintf(stderr, "[*] Failed to clear the renderer : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer); 
     }
 
-    if(SDL_RenderClear(cursor_renderer) != 0)
-    {
-        fprintf(stderr, "[*] Failed to update the renderer : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, imgs, window, cursor_renderer);
+    if (SDL_RenderClear(renderer)){
+        fprintf(stderr, "[*] Failed to clear the renderer : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);   
     }
-    
+}
+
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[]){
     static const SDL_Color burgundy_color = {129, 17, 17, 255};
-    if  (SDL_SetRenderDrawColor(cursor_renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){
-        fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, imgs, window, cursor_renderer);
+
+    clear_renderer(renderer, window, imgs);
+
+    if (SDL_RenderCopy(renderer, imgs[0], NULL, NULL) != 0){
+        fprintf(stderr, "[*] Failed to bind the board image to the window : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
     }
-    DrawCircle(cursor_renderer, 100 + 150*cursor_row, 100 + 150*cursol_line, 50);
-    SDL_RenderPresent(cursor_renderer);*/
+    SDL_RenderPresent(renderer);
+    if  (SDL_SetRenderDrawColor(renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){
+        fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
+    DrawCircle(renderer, 100 + 150*cursor_row, 100 + 150*cursol_line, 50);
+    SDL_RenderPresent(renderer);
 }
 
 
