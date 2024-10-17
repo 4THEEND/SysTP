@@ -135,7 +135,7 @@ void run_game(){
                     quit = true;
                     break;
             }
-            display_board(&board, window, renderer,row, line, images_tab);
+            display_board(&board, window, renderer,row, line, images_tab, player);
         }
     }   
 
@@ -148,7 +148,9 @@ void run_game(){
 bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest, char player){
     assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
     if (board_height(b, line_src, row_src) > 0 && board_top(b, line_src, row_src) == player){
-        board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
+        if (!b->board_traps[line_src][row_src] || (b->board_traps[line_src][row_src] && allow_trapped_move(b, line_src, row_src))){
+            board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
+        }
         return true;
     }
     return false;
@@ -183,7 +185,7 @@ void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, in
 }
 
 
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[]){
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[], char player){
     static const SDL_Color burgundy_color = {129, 17, 17, 255};
 
     clear_renderer(renderer, window, imgs);
