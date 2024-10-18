@@ -76,13 +76,12 @@ bool peut_joueur_deplacer(board_t* b, char joueur){
 
 
 bool allow_trapped_move(board_t* b, int ligne, int colonne){
-    bool are_empty = true;
     for(int col = 0; col < colonne; col++){
         if(board_height(b, ligne, col) != 0){
-            are_empty = false;
+            return false || !(b->board_traps[ligne][colonne]);
         }
     }
-    return are_empty || !(b->board_traps[ligne][colonne]);
+    return true;
 }
 
 int play_game(board_t* b){ //retourne le joueur gagnant

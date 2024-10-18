@@ -105,10 +105,18 @@ void run_game(){
     int row = 0;
     int line = 0;
 
+    int finishedHedgehogs[NB_JOUEURS];
+    for(int i = 0; i < NB_JOUEURS; i++){
+        finishedHedgehogs[i] = 0;
+    }
+    int winner = -1;
+
     SDL_Event event;
     bool quit = false;
 
     char player = 'a';
+    if (!peut_joueur_deplacer(&board, player))
+        player = getNextPLayerVerified(player, 1, &board);
     
     while(!quit)
     {
@@ -137,8 +145,8 @@ void run_game(){
                         case SDLK_SPACE:
                             if (row + 1 < NB_ROW){
                                 if (move_hedgehog(&board, line, row, line, row + 1, player)){
+                                    //winner = get_winner(finishedHedgehogs);
                                     player = getNextPLayerVerified(player, 1, &board);
-                                    printf("%c\n", player);
                                     if (player == NULL_PLAYER){
                                         printf("[*] Draw !!!\n");
                                         exit_sdl(NB_IMAGES, images_tab, window, renderer);
@@ -165,10 +173,10 @@ void run_game(){
 bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest, char player){
     assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
     if (board_height(b, line_src, row_src) > 0 && board_top(b, line_src, row_src) == player){
-        if (!b->board_traps[line_src][row_src] || (b->board_traps[line_src][row_src] && allow_trapped_move(b, line_src, row_src))){
+        if((board_height(b, line_src, row_src) == 1 && allow_trapped_move(b, line_src, row_src)) || board_height(b, line_src, row_src) > 1){
             board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
+            return true;
         }
-        return true;
     }
     return false;
 }

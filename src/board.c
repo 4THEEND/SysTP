@@ -4,7 +4,7 @@
 
 
 void init_board(board_t* b){
-    const int traps_coords[NB_TRAP][2] = {{0, 2}, {1, 6}, {2, 4}, {3, 5}, {4, 3}, {5, 7}};
+    const int traps_coords[NB_TRAP][2] = {{0, 3}, {1, 6}, {2, 4}, {3, 5}, {4, 2}, {5, 7}};
     for (int i = 0; i < NB_LINE; i++){
         for (int j = 0; j < NB_ROW; j++){
             b->board_traps[i][j] = false;
