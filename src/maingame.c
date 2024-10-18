@@ -30,13 +30,21 @@ void initialize_game(board_t* b) {
     }
 }
 
-int get_winner(int* herissonsFinis){ //retourne -1 s'il n'y a pas de gagnant
+
+//Prend en entrée un tableau indiquant, pour chaque joueur, le nombre de ses hérissons qui sont
+//arrivés à la fin, et un tableau de taille NB_JOUEURS initialisé à '0' qui sera utilisé pour le retour.
+// Retourne 1 s'il y a des gagnants, en indiquant lequels dans [gagnants], soit 0 s'il y en a pas.
+bool get_winner(int* herissonsFinis, char* gagnants){
+    bool are_there_winners = false;
+    int gagnants_position = 0;
     for(int i = 0; i < NB_JOUEURS; i++){
         if(herissonsFinis[i] == (NB_HERISSONS - 1)){
-            return i;
+            gagnants[gagnants_position] = (char)((int)'a' + i);
+            gagnants_position++;
+            are_there_winners = true;
         }
     }
-    return -1;
+    return are_there_winners;
 }
 
 void clean_input_buffer(){
@@ -46,9 +54,9 @@ void clean_input_buffer(){
      }
 }
 
-bool is_coordinate_valid(int colonne, int ligne){
-    bool is_colonne_valid = (colonne >= 1) && (colonne <= NB_ROW);
-    bool is_ligne_valid = (ligne >= 1 ) && (ligne <= NB_LINE);
+bool is_coordinate_valid(int ligne, int colonne){
+    bool is_colonne_valid = (colonne >= 0) && (colonne < NB_ROW);
+    bool is_ligne_valid = (ligne >= 0 ) && (ligne < NB_LINE);
     return is_colonne_valid && is_ligne_valid;
 }
 
@@ -84,13 +92,12 @@ bool allow_trapped_move(board_t* b, int ligne, int colonne){
     return true;
 }
 
-int play_game(board_t* b){ //retourne le joueur gagnant
+void play_game(board_t* b, char* gagnants){ //retourne le joueur gagnant
     int herissonsFinis[NB_JOUEURS];
     for(int i = 0; i < NB_JOUEURS; i++){
         herissonsFinis[i] = 0;
-    }
-    int winner = -1;                                                
-    while(winner == -1){
+    }                                        
+    while(get_winner(herissonsFinis, gagnants) == 0){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
             int resultat_de = de();
             board_print(b, resultat_de);
@@ -120,7 +127,7 @@ int play_game(board_t* b){ //retourne le joueur gagnant
                 scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
                 int col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
                 clean_input_buffer();
-                while( !(is_coordinate_valid(ligne_herisson, col_herisson)) || !(is_coordinate_valid(ligne_objectif, 1)) 
+                while( !(is_coordinate_valid(ligne_herisson - 1, col_herisson - 1)) || !(is_coordinate_valid(ligne_objectif - 1, 0)) 
                     || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) 
                     || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a'))
                     || !(allow_trapped_move(b, ligne_herisson - 1, col_herisson - 1)) ){
@@ -141,7 +148,7 @@ int play_game(board_t* b){ //retourne le joueur gagnant
                 scanf("%c", &colonne_deplace_tmp);
                 int colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
                 clean_input_buffer();
-                while(!(is_coordinate_valid(1, colonne_deplace)) || board_height(b, resultat_de, colonne_deplace - 1) == 0
+                while(!(is_coordinate_valid(0, colonne_deplace - 1)) || board_height(b, resultat_de, colonne_deplace - 1) == 0
                 || !(allow_trapped_move(b, resultat_de, colonne_deplace - 1))){
                     printf("Veuillez saisir une colonne valide non vide sans piège ou avec un piège désactivé: \n");
                     scanf("%c", &colonne_deplace_tmp);
@@ -150,13 +157,12 @@ int play_game(board_t* b){ //retourne le joueur gagnant
                 }
                 char player = board_pop(b, resultat_de, colonne_deplace - 1);
                 board_push(b, resultat_de, colonne_deplace, player);
-                if(colonne_deplace == NB_ROW){
+                if(colonne_deplace == NB_ROW - 1){
                     herissonsFinis[(int)(player - (char)'a')]++;
+                    printf("Un hérisson est arrivé ! \n");
                 }
             }
         }
 
     }
-
-    return 0;
 }

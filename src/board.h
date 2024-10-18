@@ -4,11 +4,11 @@
 #include "stack.h"
 #include <stdbool.h>
 
-#define NB_ROW 9
-#define NB_LINE 6
+#define NB_ROW 4
+#define NB_LINE 3
 #define NB_TRAP 6
-#define NB_JOUEURS 4
-#define NB_HERISSONS 4
+#define NB_JOUEURS 3
+#define NB_HERISSONS 2
 
 typedef struct{
     stack_t board[NB_LINE][NB_ROW];
