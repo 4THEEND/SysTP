@@ -7,6 +7,17 @@
 #include <assert.h>
 
 
+char getNextPLayerVerified(char player, int nb_rows, board_t* b){
+    if (nb_rows == NB_JOUEURS){
+        return NULL_PLAYER;
+    }
+    char np = getNextPlayer(player);
+    if (peut_joueur_deplacer(b, np)){
+        return np;
+    }
+    return getNextPLayerVerified(np, nb_rows + 1, b);
+}
+
 char getNextPlayer(char player){
     if (player == 'a' + NB_JOUEURS - 1){
         return 'a';
@@ -90,6 +101,7 @@ void run_game(){
     board_t board;
     init_board(&board);
     initialize_game(&board);
+    
     int row = 0;
     int line = 0;
 
@@ -125,7 +137,12 @@ void run_game(){
                         case SDLK_SPACE:
                             if (row + 1 < NB_ROW){
                                 if (move_hedgehog(&board, line, row, line, row + 1, player)){
-                                    player = getNextPlayer(player);
+                                    player = getNextPLayerVerified(player, 1, &board);
+                                    printf("%c\n", player);
+                                    if (player == NULL_PLAYER){
+                                        printf("[*] Draw !!!\n");
+                                        exit_sdl(NB_IMAGES, images_tab, window, renderer);
+                                    }
                                 }
                             }
                             break;
