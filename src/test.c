@@ -2,6 +2,7 @@
 #include "g_interface.h"
 #include <assert.h>
 #include <stdio.h>
+#include <time.h>
 
 
 void test_stack(void){
@@ -19,6 +20,7 @@ void test_stack(void){
 int main(){
     test_stack();
 
+    srand(time(NULL));
     run_game();
 
     printf("Tous les test se sont bien déroulés :)\n");

@@ -3,7 +3,6 @@
 #include "maingame.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
-#include <time.h>
 #include <assert.h>
 
 
@@ -56,7 +55,6 @@ SDL_Texture* load_image(const char* path, SDL_Renderer* render, SDL_Window* wind
 
 
 void run_game(){
-    srand(time(NULL));
 
     if(SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0){
         fprintf(stderr, "[*] Failed to intialise SDL2: %s\n", SDL_GetError());
@@ -127,7 +125,12 @@ void run_game(){
     if (!peut_joueur_deplacer(&board, player)) 
         player = getNextPLayerVerified(player, 1, &board);
 
-    
+    int round = 0;
+    /* To help distinguish between each different phases of a player round
+        0 : go up/down a hedgehog
+        1 : make a hedgehog go forward
+    */
+
     while(!quit)
     {
         while(SDL_PollEvent(&event)){
@@ -153,13 +156,19 @@ void run_game(){
                                 row++;
                             break;
                         case SDLK_SPACE:
-                            if (row + 1 < NB_ROW){
-                                if (move_hedgehog(&board, line, row, line, row + 1, player)){
-                                    //winner = get_winner(finishedHedgehogs);
-                                    player = getNextPLayerVerified(player, 1, &board);
-                                    if (player == NULL_PLAYER){
-                                        printf("[*] Draw !!!\n");
-                                        exit_sdl(NB_IMAGES, images_tab, window, renderer);
+                            if (round == 0 && (line + 1 < NB_LINE)){
+                                if (board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row))
+                                    round++;
+                            }
+                            else if (round == 1){
+                                if (row + 1 < NB_ROW){
+                                    if (move_hedgehog(&board, line, row, line, row + 1)){
+                                        player = getNextPLayerVerified(player, 1, &board);
+                                        if (player == NULL_PLAYER){
+                                            printf("[*] Draw !!!\n");
+                                            exit_sdl(NB_IMAGES, images_tab, window, renderer);
+                                        }
+                                        round = 0;
                                     }
                                 }
                             }
@@ -180,9 +189,9 @@ void run_game(){
 }
 
 
-bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest, char player){
+bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest){
     assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
-    if (board_height(b, line_src, row_src) > 0 && board_top(b, line_src, row_src) == player){
+    if (board_height(b, line_src, row_src) > 0){
         if((board_height(b, line_src, row_src) == 1 && allow_trapped_move(b, line_src, row_src)) || board_height(b, line_src, row_src) > 1){
             board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
             return true;
