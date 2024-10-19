@@ -113,14 +113,20 @@ void run_game(){
     for(int i = 0; i < NB_JOUEURS; i++){
         finishedHedgehogs[i] = 0;
     }
+    char gagnants[NB_JOUEURS];
+    for(int i = 0; i < NB_JOUEURS; i++){
+        gagnants[i] = '0';
+    }     
+
     int winner = -1;
 
     SDL_Event event;
     bool quit = false;
 
     char player = 'a';
-    if (!peut_joueur_deplacer(&board, player))
+    if (!peut_joueur_deplacer(&board, player)) 
         player = getNextPLayerVerified(player, 1, &board);
+
     
     while(!quit)
     {
@@ -224,6 +230,10 @@ void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i
         fprintf(stderr, "[*] Failed to render the token : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
     }
+}
+
+
+void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* imgs[], const char* text, int i, int j){
 }
 
 

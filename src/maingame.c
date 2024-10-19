@@ -33,7 +33,7 @@ void initialize_game(board_t* b) {
 
 //Prend en entrée un tableau indiquant, pour chaque joueur, le nombre de ses hérissons qui sont
 //arrivés à la fin, et un tableau de taille NB_JOUEURS initialisé à '0' qui sera utilisé pour le retour.
-// Retourne 1 s'il y a des gagnants, en indiquant lequels dans [gagnants], soit 0 s'il y en a pas.
+// Retourne vrai s'il y a des gagnants, en indiquant lequels dans [gagnants], soit faux s'il y en a pas.
 bool get_winner(int* herissonsFinis, char* gagnants){
     bool are_there_winners = false;
     int gagnants_position = 0;
@@ -83,8 +83,7 @@ bool allow_trapped_move(board_t* b, int ligne, int colonne){
 bool peut_joueur_deplacer(board_t* b, char joueur){
     for(int ligne = 0; ligne < NB_LINE; ligne++){
         for(int col = 0; col < NB_ROW; col++){
-            if((board_height(b, ligne, col) != 0) && (board_top(b, ligne, col) == joueur)){
-                return allow_trapped_move(b, ligne, col);
+            if((board_height(b, ligne, col) != 0) && (board_top(b, ligne, col) == joueur) && allow_trapped_move(b, ligne, col)){
                 return true;
             }
         }
@@ -98,7 +97,7 @@ void play_game(board_t* b, char* gagnants){ //retourne le joueur gagnant
     for(int i = 0; i < NB_JOUEURS; i++){
         herissonsFinis[i] = 0;
     }                                        
-    while(get_winner(herissonsFinis, gagnants) == 0){
+    while(!get_winner(herissonsFinis, gagnants)){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
             int resultat_de = de();
             board_print(b, resultat_de);
