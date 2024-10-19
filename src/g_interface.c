@@ -121,8 +121,6 @@ void run_game(){
     char player = 'a';
     if (!peut_joueur_deplacer(&board, player))
         player = getNextPLayerVerified(player, 1, &board);
-
-    board_print(&board, 1);
     
     while(!quit)
     {

@@ -70,19 +70,6 @@ bool is_ligne_vide(board_t* b, int ligne){
     return is_empty;
 }
 
-bool peut_joueur_deplacer(board_t* b, char joueur){
-    bool peut_il = false;
-    for(int ligne = 0; ligne < NB_LINE; ligne++){
-        for(int col = 0; col < NB_ROW; col++){
-            if((board_height(b, ligne, col) != 0) && (board_top(b, ligne, col) == joueur)){
-                peut_il = true;
-            }
-        }
-    }
-    return peut_il;
-}
-
-
 bool allow_trapped_move(board_t* b, int ligne, int colonne){
     for(int col = 0; col < colonne; col++){
         if(board_height(b, ligne, col) != 0){
@@ -91,6 +78,20 @@ bool allow_trapped_move(board_t* b, int ligne, int colonne){
     }
     return true;
 }
+
+
+bool peut_joueur_deplacer(board_t* b, char joueur){
+    for(int ligne = 0; ligne < NB_LINE; ligne++){
+        for(int col = 0; col < NB_ROW; col++){
+            if((board_height(b, ligne, col) != 0) && (board_top(b, ligne, col) == joueur)){
+                return allow_trapped_move(b, ligne, col);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 
 void play_game(board_t* b, char* gagnants){ //retourne le joueur gagnant
     int herissonsFinis[NB_JOUEURS];
