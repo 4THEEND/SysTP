@@ -85,9 +85,9 @@ void run_game(){
     2 : blue hedgehog image
     3 : green hedgehog image
     4 : purple hedgehog image
-    5 : purple token image
-    6 : green token image
-    7 : blue token image
+    5 : red token image
+    6 : blue token image
+    7 : green token image
     8 : red token image
     */
 
@@ -96,10 +96,10 @@ void run_game(){
     images_tab[2] = load_image(BLUE_HG_BMP_PATH, renderer, window);
     images_tab[3] = load_image(GREEN_HG_BMP_PATH, renderer, window);
     images_tab[4] = load_image(PURPLE_HG_BMP_PATH, renderer, window);
-    images_tab[5] = load_image(PURPLE_TOKEN_HG_BMP_PATH, renderer, window);
-    images_tab[6] = load_image(GREEN_TOKEN_HG_BMP_PATH, renderer, window);
-    images_tab[7] = load_image(BLUE_TOKEN_HG_BMP_PATH, renderer, window);
-    images_tab[8] = load_image(RED_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[5] = load_image(RED_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[6] = load_image(BLUE_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[7] = load_image(GREEN_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[8] = load_image(PURPLE_TOKEN_HG_BMP_PATH, renderer, window);
 
 
     board_t board;
@@ -121,6 +121,8 @@ void run_game(){
     char player = 'a';
     if (!peut_joueur_deplacer(&board, player))
         player = getNextPLayerVerified(player, 1, &board);
+
+    board_print(&board, 1);
     
     while(!quit)
     {
@@ -164,7 +166,7 @@ void run_game(){
                     quit = true;
                     break;
             }
-            display_board(&board, window, renderer,row, line, images_tab, player);
+            display_board(&board, window, renderer, row, line, images_tab, player);
         }
     }   
 
@@ -213,20 +215,21 @@ void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, in
     }
 }
 
-void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], int pos, char player){
-    SDL_Rect hg_pos;
-    hg_pos.h = TOKEN_HEIGHT;
-    hg_pos.w = TOKEN_WIDTH;
-    hg_pos.x = 0; // column
-    hg_pos.y = 0; // line
-    if (SDL_RenderCopy(renderer, imgs[board_peek(b, i, j, pos) - 'a' + 1], NULL, &hg_pos)){
+
+void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], char player){
+    SDL_Rect token_pos;
+    token_pos.h = TOKEN_HEIGHT;
+    token_pos.w = TOKEN_WIDTH;
+    token_pos.x = 110 + 140*j; // column
+    token_pos.y = 120 + 125*i; // line
+    if (SDL_RenderCopy(renderer, imgs[5 + player - 'a'], NULL, &token_pos)){
         fprintf(stderr, "[*] Failed to render the token : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
     }
 }
 
 
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[], char player){
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player){
     static const SDL_Color burgundy_color = {129, 17, 17, 255};
 
     clear_renderer(renderer, window, imgs);
@@ -252,49 +255,11 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
             }
         }
     }
+    display_token(b, window, renderer, cursor_line, cursor_row, imgs, player);
 
     if  (SDL_SetRenderDrawColor(renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){
         fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
     }
-    DrawCircle(renderer, 100 + 150*cursor_row, 100 + 150*cursol_line, 50);
     SDL_RenderPresent(renderer);
-}
-
-
-void DrawCircle(SDL_Renderer* renderer, int centreX, int centreY, int radius)
-{
-   const int diameter = (radius * 2);
-
-   int x = (radius - 1);
-   int y = 0;
-   int tx = 1;
-   int ty = 1;
-   int error = (tx - diameter);
-
-   while (x >= y)
-   {
-      SDL_RenderDrawPoint(renderer, centreX + x, centreY - y);
-      SDL_RenderDrawPoint(renderer, centreX + x, centreY + y);
-      SDL_RenderDrawPoint(renderer, centreX - x, centreY - y);
-      SDL_RenderDrawPoint(renderer, centreX - x, centreY + y);
-      SDL_RenderDrawPoint(renderer, centreX + y, centreY - x);
-      SDL_RenderDrawPoint(renderer, centreX + y, centreY + x);
-      SDL_RenderDrawPoint(renderer, centreX - y, centreY - x);
-      SDL_RenderDrawPoint(renderer, centreX - y, centreY + x);
-
-      if (error <= 0)
-      {
-         ++y;
-         error += ty;
-         ty += 2;
-      }
-
-      if (error > 0)
-      {
-         --x;
-         tx += 2;
-         error += (tx - diameter);
-      }
-   }
 }
