@@ -89,7 +89,7 @@ void run_game(){
     8 : red token image
     */
 
-    images_tab[0] = load_image(BOARD_BMP_PATH, renderer, window); 
+    images_tab[0] = load_image(BOARD_BMP_PATH, renderer, window);
     images_tab[1] = load_image(RED_HG_BMP_PATH, renderer, window);
     images_tab[2] = load_image(BLUE_HG_BMP_PATH, renderer, window);
     images_tab[3] = load_image(GREEN_HG_BMP_PATH, renderer, window);
@@ -131,6 +131,8 @@ void run_game(){
         1 : make a hedgehog go forward
     */
 
+   bool asked = true;
+
     while(!quit)
     {
         while(SDL_PollEvent(&event)){
@@ -155,22 +157,29 @@ void run_game(){
                             if (row < NB_ROW - 1)
                                 row++;
                             break;
+                        case SDLK_n:
+                            if (asked){
+                                if (!peut_joueur_deplacer(&board, player)) 
+                                    player = getNextPLayerVerified(player, 1, &board);
+                                asked = false;
+                                round++;
+                            }
+                            break;
                         case SDLK_SPACE:
                             if (round == 0 && (line + 1 < NB_LINE)){
-                                if (board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row))
+                                if (board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row)){
                                     round++;
-                            }
-                            else if (round == 1){
-                                if (row + 1 < NB_ROW){
-                                    if (move_hedgehog(&board, line, row, line, row + 1)){
-                                        player = getNextPLayerVerified(player, 1, &board);
-                                        if (player == NULL_PLAYER){
-                                            printf("[*] Draw !!!\n");
-                                            exit_sdl(NB_IMAGES, images_tab, window, renderer);
-                                        }
-                                        round = 0;
-                                    }
+                                    asked = false;
                                 }
+                            }
+                            else if (round == 1 && row + 1 < NB_ROW && move_hedgehog(&board, line, row, line, row + 1)){
+                                player = getNextPLayerVerified(player, 1, &board);
+                                if (player == NULL_PLAYER){
+                                    printf("[*] Draw !!!\n");
+                                    exit_sdl(NB_IMAGES, images_tab, window, renderer);
+                                }
+                                round = 0;
+                                asked = true;
                             }
                             break;
                     }
