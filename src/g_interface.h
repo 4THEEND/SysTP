@@ -12,6 +12,9 @@
 #define HEDGEHOG_WIDTH 105
 #define HEDGEHOG_HEIGHT 115
 
+#define TOKEN_WIDTH 100
+#define TOKEN_HEIGHT 100
+
 #define NULL_PLAYER '0'
 
 #define BOARD_BMP_PATH "../images/board.bmp"

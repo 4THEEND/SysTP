@@ -86,7 +86,7 @@ void run_game(){
     3 : green hedgehog image
     4 : purple hedgehog image
     5 : purple token image
-    6 : grenn token image
+    6 : green token image
     7 : blue token image
     8 : red token image
     */
@@ -96,6 +96,10 @@ void run_game(){
     images_tab[2] = load_image(BLUE_HG_BMP_PATH, renderer, window);
     images_tab[3] = load_image(GREEN_HG_BMP_PATH, renderer, window);
     images_tab[4] = load_image(PURPLE_HG_BMP_PATH, renderer, window);
+    images_tab[5] = load_image(PURPLE_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[6] = load_image(GREEN_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[7] = load_image(BLUE_TOKEN_HG_BMP_PATH, renderer, window);
+    images_tab[8] = load_image(RED_TOKEN_HG_BMP_PATH, renderer, window);
 
 
     board_t board;
@@ -205,6 +209,18 @@ void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, in
     hg_pos.y = 130 + 125*i; // line
     if (SDL_RenderCopy(renderer, imgs[board_peek(b, i, j, pos) - 'a' + 1], NULL, &hg_pos)){
         fprintf(stderr, "[*] Failed to render an hedgehog : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
+}
+
+void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], int pos, char player){
+    SDL_Rect hg_pos;
+    hg_pos.h = TOKEN_HEIGHT;
+    hg_pos.w = TOKEN_WIDTH;
+    hg_pos.x = 0; // column
+    hg_pos.y = 0; // line
+    if (SDL_RenderCopy(renderer, imgs[board_peek(b, i, j, pos) - 'a' + 1], NULL, &hg_pos)){
+        fprintf(stderr, "[*] Failed to render the token : %s\n", SDL_GetError());
         exit_sdl(NB_IMAGES, imgs, window, renderer);
     }
 }
