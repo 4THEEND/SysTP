@@ -91,6 +91,15 @@ bool peut_joueur_deplacer(board_t* b, char joueur){
     return false;
 }
 
+bool peut_joueur_deplacer_ligne(board_t* b, int resulat_de){
+    for(int col = 0; col < NB_ROW; col++){
+        if((board_height(b, resulat_de, col) != 0) && allow_trapped_move(b, resulat_de, col)){
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void play_game(board_t* b, char* gagnants){ //retourne le joueur gagnant
     int herissonsFinis[NB_JOUEURS];

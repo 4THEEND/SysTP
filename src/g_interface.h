@@ -32,7 +32,7 @@
 
 void run_game();
 char getNextPlayer(char player);
-char getNextPLayerVerified(char player, int nb_rows, board_t* b);
+char getNextPLayerVerified(char player, int nb_rows, board_t* b, int* resultat_de);
 SDL_Texture* load_image(const char* path, SDL_Renderer* render, SDL_Window* window);
 void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Renderer* render);
 void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* imgs[]);

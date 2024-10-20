@@ -7,6 +7,7 @@
 
 void test_stack(void){
     stack_t s1 = {.m_pos = -1};
+    assert(height(&s1) == 0);
     push(&s1, 'c');
     assert(top(&s1) == 'c');
     push(&s1, 'b');

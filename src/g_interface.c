@@ -6,16 +6,18 @@
 #include <assert.h>
 
 
-char getNextPLayerVerified(char player, int nb_rows, board_t* b){
+char getNextPLayerVerified(char player, int nb_rows, board_t* b, int* resultat_de_p){
+    *resultat_de_p = de();
     if (nb_rows == NB_JOUEURS){
         return NULL_PLAYER;
     }
     char np = getNextPlayer(player);
-    if (peut_joueur_deplacer(b, np)){
+    if (peut_joueur_deplacer_ligne(b, *resultat_de_p)){
         return np;
     }
-    return getNextPLayerVerified(np, nb_rows + 1, b);
+    return getNextPLayerVerified(np, nb_rows + 1, b, resultat_de_p);
 }
+
 
 char getNextPlayer(char player){
     if (player == 'a' + NB_JOUEURS - 1){
@@ -37,6 +39,7 @@ void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Rende
     SDL_Quit();
     exit(EXIT_SUCCESS);
 }
+
 
 SDL_Texture* load_image(const char* path, SDL_Renderer* render, SDL_Window* window){
     SDL_Surface* image = SDL_LoadBMP(path);
@@ -108,22 +111,22 @@ void run_game(){
     int line = 0;
 
     int finishedHedgehogs[NB_JOUEURS];
+    char gagnants[NB_JOUEURS];
+
     for(int i = 0; i < NB_JOUEURS; i++){
         finishedHedgehogs[i] = 0;
-    }
-    char gagnants[NB_JOUEURS];
-    for(int i = 0; i < NB_JOUEURS; i++){
         gagnants[i] = '0';
     }     
-
-    int winner = -1;
 
     SDL_Event event;
     bool quit = false;
 
+    int resultat_de = de();
+    printf("[*] dé : %d\n", resultat_de + 1);
+
     char player = 'a';
-    if (!peut_joueur_deplacer(&board, player)) 
-        player = getNextPLayerVerified(player, 1, &board);
+    if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
+        player = getNextPLayerVerified(player, 1, &board, &resultat_de);
 
     int round = 0;
     /* To help distinguish between each different phases of a player round
@@ -159,27 +162,30 @@ void run_game(){
                             break;
                         case SDLK_n:
                             if (asked){
-                                if (!peut_joueur_deplacer(&board, player)) 
-                                    player = getNextPLayerVerified(player, 1, &board);
+                                if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
+                                    player = getNextPLayerVerified(player, 1, &board, &resultat_de);
                                 asked = false;
                                 round++;
                             }
                             break;
                         case SDLK_SPACE:
-                            if (round == 0 && (line + 1 < NB_LINE)){
-                                if (board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row)){
+                            if (round == 0 && line + 1 < NB_LINE){
+                                if (board_height(&board, line, row) > 0 && board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row)){
+                                    if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
+                                        player = getNextPLayerVerified(player, 1, &board, &resultat_de);
                                     round++;
                                     asked = false;
                                 }
                             }
-                            else if (round == 1 && row + 1 < NB_ROW && move_hedgehog(&board, line, row, line, row + 1)){
-                                player = getNextPLayerVerified(player, 1, &board);
+                            else if (round == 1 && row + 1 < NB_ROW && resultat_de == line && move_hedgehog(&board, line, row, line, row + 1)){
+                                player = getNextPLayerVerified(player, 1, &board, &resultat_de);
                                 if (player == NULL_PLAYER){
                                     printf("[*] Draw !!!\n");
                                     exit_sdl(NB_IMAGES, images_tab, window, renderer);
                                 }
                                 round = 0;
                                 asked = true;
+                                printf("[*] dé : %d\n", resultat_de + 1);
                             }
                             break;
                     }
