@@ -7,21 +7,19 @@
 #include <assert.h>
 
 
-char getNextPLayerVerified(char player, int nb_rows, board_t* b, int* resultat_de_p){
+char getNextPLayerVerified(char player, board_t* b, int* resultat_de_p, int* round){
     *resultat_de_p = de();
-    if (nb_rows == NB_JOUEURS){
-        return NULL_PLAYER;
-    }
-    char np = getNextPlayer(player);
+    char np = getNextPlayer(player, round);
     if (peut_joueur_deplacer_ligne(b, *resultat_de_p)){
         return np;
     }
-    return getNextPLayerVerified(np, nb_rows + 1, b, resultat_de_p);
+    return getNextPLayerVerified(np, b, resultat_de_p, round);
 }
 
 
-char getNextPlayer(char player){
+char getNextPlayer(char player, int* round){
     if (player == 'a' + NB_JOUEURS - 1){
+        (*round)++;
         return 'a';
     }
     return player + 1;
@@ -118,26 +116,29 @@ void run_game(){
     int line = 0;
 
     int finishedHedgehogs[NB_JOUEURS];
-    char gagnants[NB_JOUEURS];
+    char winners[NB_JOUEURS];
 
     for(int i = 0; i < NB_JOUEURS; i++){
         finishedHedgehogs[i] = 0;
-        gagnants[i] = '0';
+        winners[i] = '0';
     }     
 
     SDL_Event event;
     bool quit = false;
 
     int resultat_de = de();
+    int round = 0;
+    int finished_round = -1;
 
     char player = 'a';
     if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
-        player = getNextPLayerVerified(player, 1, &board, &resultat_de);
+        player = getNextPLayerVerified(player, &board, &resultat_de, &round);
 
-    int round = 0;
+    int phase = 0;
     /* To help distinguish between each different phases of a player round
         0 : go up/down a hedgehog
         1 : make a hedgehog go forward
+        2 : the final round is done
     */
 
    bool asked = true;
@@ -168,29 +169,38 @@ void run_game(){
                             break;
                         case SDLK_n:
                             if (asked){
-                                if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
-                                    player = getNextPLayerVerified(player, 1, &board, &resultat_de);
+                                if (!peut_joueur_deplacer_ligne(&board, resultat_de))
+                                    player = getNextPLayerVerified(player, &board, &resultat_de, &round);
                                 asked = false;
-                                round++;
+                                phase++;
                             }
                             break;
                         case SDLK_SPACE:
-                            if (round == 0 && line + 1 < NB_LINE){
+                            if (phase == 0 && line + 1 < NB_LINE){
                                 if (board_height(&board, line, row) > 0 && board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row)){
                                     if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
-                                        player = getNextPLayerVerified(player, 1, &board, &resultat_de);
-                                    round++;
+                                        player = getNextPLayerVerified(player, &board, &resultat_de, &round);
+                                    phase++;
                                     asked = false;
                                 }
                             }
-                            else if (round == 1 && row + 1 < NB_ROW && resultat_de == line && move_hedgehog(&board, line, row, line, row + 1)){
-                                player = getNextPLayerVerified(player, 1, &board, &resultat_de);
-                                if (player == NULL_PLAYER){
-                                    printf("[*] Draw !!!\n");
-                                    exit_sdl(NB_IMAGES, images_tab, window, renderer);
+                            else if (phase == 1 && row + 1 < NB_ROW  && move_hedgehog(&board, line, row, line, row + 1)){
+                                //&& resultat_de == line
+                                if (row + 1 == NB_ROW - 1)
+                                    finishedHedgehogs[board_top(&board, line, row + 1) - 'a']++;
+                                if (get_winner(finishedHedgehogs, winners)){
+                                    if (finished_round == -1){
+                                        finished_round = round;
+                                    }
                                 }
-                                round = 0;
-                                asked = true;
+                                player = getNextPLayerVerified(player, &board, &resultat_de, &round);
+                                if (finished_round != -1 && round > finished_round){
+                                    phase = 2;
+                                }
+                                if (phase != 2){
+                                    phase = 0;
+                                    asked = true;
+                                }
                             }
                             break;
                     }
@@ -199,7 +209,7 @@ void run_game(){
                     quit = true;
                     break;
             }
-            display_board(&board, window, renderer, row, line, images_tab, player, resultat_de, asked, round);
+            display_board(&board, window, renderer, row, line, images_tab, player, resultat_de, asked, phase);
         }
     }   
 
@@ -211,7 +221,7 @@ void run_game(){
 
 bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest){
     assert(line_src < NB_LINE && row_src < NB_ROW && line_dest < NB_LINE && row_dest < NB_ROW);
-    if (board_height(b, line_src, row_src) > 0){
+    if (board_height(b, line_src, row_src) > 0 && row_src != NB_ROW - 1){
         if((board_height(b, line_src, row_src) == 1 && allow_trapped_move(b, line_src, row_src)) || board_height(b, line_src, row_src) > 1){
             board_push(b, line_dest, row_dest, board_pop(b, line_src, row_src));
             return true;
@@ -296,7 +306,7 @@ void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Te
 }
 
 
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int round){
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int phase){
     clear_renderer(renderer, window, imgs);
 
     if (SDL_RenderCopy(renderer, imgs[0], NULL, NULL) != 0){
@@ -322,14 +332,17 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
     }
     display_token(b, window, renderer, cursor_line, cursor_row, imgs, player);
     
-    char t_rd[2];
+    char t_rd[12];
     sprintf(t_rd, "%d", resultat_de + 1);
 
     if (asked){
         display_text(b, window, renderer, imgs, "Type 'n' to skip line movement", 50, 300, 60, 1000);
     }
-    else if(round == 1){
+    else if(phase == 1){
         display_text(b, window, renderer, imgs, "Move an hedgehog on the line selected by the dice", 50, 300, 60, 1000);
+    }
+    else if(phase == 2){
+        display_text(b, window, renderer, imgs, "Game is finished here is the leaderboard:", 50, 300, 60, 1000);
     }
 
     display_text(b, window, renderer, imgs, t_rd, 100, 100, 100, 100);

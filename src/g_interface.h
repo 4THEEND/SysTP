@@ -15,8 +15,6 @@
 #define TOKEN_WIDTH 105
 #define TOKEN_HEIGHT 75
 
-#define NULL_PLAYER '0'
-
 #define BOARD_BMP_PATH "../images/board.bmp"
 
 #define RED_HG_BMP_PATH "../images/red.bmp"
@@ -33,8 +31,8 @@
 
 
 void run_game();
-char getNextPlayer(char player);
-char getNextPLayerVerified(char player, int nb_rows, board_t* b, int* resultat_de);
+char getNextPlayer(char player, int* round);
+char getNextPLayerVerified(char player, board_t* b, int* resultat_de, int* round);
 SDL_Texture* load_image(const char* path, SDL_Renderer* render, SDL_Window* window);
 void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Renderer* render);
 void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* imgs[]);
@@ -42,6 +40,6 @@ bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row
 void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], char player);
 void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], int pos);
 void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* imgs[], const char* text, int i, int j, int h, int w);
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int round);
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int phase);
 
 #endif
