@@ -8,11 +8,11 @@ LIBS = `sdl2-config --libs --cflags` -lSDL2 -lSDL2_ttf
 
 all : prog
 
-prog : main.o board.o stack.o maingame.o
-	$(CC) $(LFLAGS) $^ -o $@
-
-prog_test : test.o stack.o g_interface.o board.o maingame.o
+prog : main.o board.o stack.o maingame.o g_interface.o
 	$(CC) $(LFLAGS) $^ $(LIBS) -o $@
+
+prog_test : test.o stack.o
+	$(CC) $(LFLAGS) $^ -o $@
 
 %.o : $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $<
