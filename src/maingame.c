@@ -62,7 +62,7 @@ bool get_winner_right(int* herissonsFinis, char* gagnants){
     bool are_there_winners = false;
     tuple tab_tri[NB_JOUEURS];
     for(int i = 0; i < NB_JOUEURS; i++){
-        if(herissonsFinis[i] == 1)
+        if(herissonsFinis[i] == NB_HERISSONS - 1)
             are_there_winners = true;
         tab_tri[i].first = herissonsFinis[i];
         tab_tri[i].second = i;

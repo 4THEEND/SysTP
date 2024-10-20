@@ -184,8 +184,7 @@ void run_game(){
                                     asked = false;
                                 }
                             }
-                            else if (phase == 1 && row + 1 < NB_ROW  && move_hedgehog(&board, line, row, line, row + 1)){
-                                //&& resultat_de == line
+                            else if (phase == 1 && row + 1 < NB_ROW  && resultat_de == line && move_hedgehog(&board, line, row, line, row + 1)){
                                 if (row + 1 == NB_ROW - 1)
                                     finishedHedgehogs[board_top(&board, line, row + 1) - 'a']++;
                                 if (get_winner_right(finishedHedgehogs, winners)){
@@ -196,14 +195,6 @@ void run_game(){
                                 player = getNextPLayerVerified(player, &board, &resultat_de, &round);
                                 if (finished_round != -1 && round > finished_round){
                                     phase = 2;
-
-                                    int rank = 1;
-                                    printf("[%d] %c (%d hedgehog)\n", rank, winners[0], finishedHedgehogs[winners[0] - 'a']);
-                                    for(int i = 1; i < NB_JOUEURS; i++){
-                                        if (finishedHedgehogs[winners[i] - 'a'] != finishedHedgehogs[winners[i - 1] - 'a'])
-                                            rank++;
-                                        printf("[%d] %c (%d hedgehog)\n", rank, winners[i], finishedHedgehogs[winners[i] - 'a']);
-                                    }
                                 }
                                 if (phase != 2){
                                     phase = 0;
@@ -217,7 +208,7 @@ void run_game(){
                     quit = true;
                     break;
             }
-            display_board(&board, window, renderer, row, line, images_tab, player, resultat_de, asked, phase);
+            display_board(&board, window, renderer, row, line, images_tab, player, resultat_de, asked, phase, finishedHedgehogs, winners);
         }
     }   
 
@@ -314,7 +305,7 @@ void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Te
 }
 
 
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int phase){
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int phase, int* finishedHg, char* winners){
     clear_renderer(renderer, window, imgs);
 
     if (SDL_RenderCopy(renderer, imgs[0], NULL, NULL) != 0){
@@ -339,9 +330,6 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
         }
     }
     display_token(b, window, renderer, cursor_line, cursor_row, imgs, player);
-    
-    char t_rd[12];
-    sprintf(t_rd, "%d", resultat_de + 1);
 
     if (asked){
         display_text(b, window, renderer, imgs, "Type 'n' to skip line movement", 50, 300, 60, 1000);
@@ -351,9 +339,22 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
     }
     else if(phase == 2){
         display_text(b, window, renderer, imgs, "Game is finished here is the leaderboard:", 50, 300, 60, 1000);
+        int rank = 1;
+        char t_hg[23];
+        sprintf(t_hg, "[%d] %c (%d hedgehog(s))\n", rank, winners[0], finishedHg[winners[0] - 'a']);
+        display_text(b, window, renderer, imgs, t_hg, 150, 300, 50, 1000);
+        for(int i = 1; i < NB_JOUEURS; i++){
+            if (finishedHg[winners[i] - 'a'] != finishedHg[winners[i - 1] - 'a'])
+                rank++;
+            sprintf(t_hg, "[%d] %c (%d hedgehog(s))\n", rank, winners[i], finishedHg[winners[i] - 'a']);
+            display_text(b, window, renderer, imgs, t_hg, 150 + 70*i, 300, 50, 1000);
+        }
     }
+    
+    char t_rd[18];
+    sprintf(t_rd, "Dice: %d", resultat_de + 1);
 
-    display_text(b, window, renderer, imgs, t_rd, 100, 100, 100, 100);
+    display_text(b, window, renderer, imgs, t_rd, 900, 510, 100, 300);
 
     SDL_RenderPresent(renderer);
 }
