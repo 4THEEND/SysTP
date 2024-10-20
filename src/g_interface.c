@@ -188,7 +188,7 @@ void run_game(){
                                 //&& resultat_de == line
                                 if (row + 1 == NB_ROW - 1)
                                     finishedHedgehogs[board_top(&board, line, row + 1) - 'a']++;
-                                if (get_winner(finishedHedgehogs, winners)){
+                                if (get_winner_right(finishedHedgehogs, winners)){
                                     if (finished_round == -1){
                                         finished_round = round;
                                     }
@@ -196,6 +196,14 @@ void run_game(){
                                 player = getNextPLayerVerified(player, &board, &resultat_de, &round);
                                 if (finished_round != -1 && round > finished_round){
                                     phase = 2;
+
+                                    int rank = 1;
+                                    printf("[%d] %c (%d hedgehog)\n", rank, winners[0], finishedHedgehogs[winners[0] - 'a']);
+                                    for(int i = 1; i < NB_JOUEURS; i++){
+                                        if (finishedHedgehogs[winners[i] - 'a'] != finishedHedgehogs[winners[i - 1] - 'a'])
+                                            rank++;
+                                        printf("[%d] %c (%d hedgehog)\n", rank, winners[i], finishedHedgehogs[winners[i] - 'a']);
+                                    }
                                 }
                                 if (phase != 2){
                                     phase = 0;

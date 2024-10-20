@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct{
+    int first;
+    int second;
+} tuple;
+
 int de(){
     return (rand() % NB_LINE);
 }
@@ -43,6 +48,30 @@ bool get_winner(int* herissonsFinis, char* gagnants){
             gagnants_position++;
             are_there_winners = true;
         }
+    }
+    return are_there_winners;
+}
+
+int comp_int_tuple(const void* a, const void* b){ // decreasing sort
+    tuple t_a = *(const tuple*)a;
+    tuple t_b = *(const tuple*)b;
+    return t_b.first - t_a.first;
+}
+
+bool get_winner_right(int* herissonsFinis, char* gagnants){
+    bool are_there_winners = false;
+    tuple tab_tri[NB_JOUEURS];
+    for(int i = 0; i < NB_JOUEURS; i++){
+        if(herissonsFinis[i] == 1)
+            are_there_winners = true;
+        tab_tri[i].first = herissonsFinis[i];
+        tab_tri[i].second = i;
+    }
+
+    qsort(tab_tri, NB_JOUEURS, sizeof(tuple), comp_int_tuple);
+
+    for(int i = 0; i < NB_JOUEURS; i++){
+        gagnants[i] = tab_tri[i].second + 'a';
     }
     return are_there_winners;
 }
