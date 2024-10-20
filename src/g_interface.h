@@ -29,6 +29,8 @@
 #define BLUE_TOKEN_HG_BMP_PATH "../images/blue_token.bmp"
 #define RED_TOKEN_HG_BMP_PATH "../images/red_token.bmp"
 
+#define FONT_FILE "../fonts/font_text.TTF"
+
 
 void run_game();
 char getNextPlayer(char player);
@@ -39,7 +41,7 @@ void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* img
 bool move_hedgehog(board_t* b, int line_src, int row_src, int line_dest, int row_dest);
 void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], char player);
 void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], int pos);
-void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* imgs[], const char* text, int i, int j);
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[], char player);
+void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* imgs[], const char* text, int i, int j, int h, int w);
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursol_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int round);
 
 #endif

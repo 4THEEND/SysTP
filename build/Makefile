@@ -4,7 +4,7 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Wno-unused-parameter
 LFLAGS = -g
-LIBS = `sdl2-config --libs --cflags` -lSDL2
+LIBS = `sdl2-config --libs --cflags` -lSDL2 -lSDL2_ttf
 
 all : prog
 

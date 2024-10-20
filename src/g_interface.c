@@ -2,6 +2,7 @@
 #include "board.h"
 #include "maingame.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <assert.h>
 
@@ -36,6 +37,7 @@ void exit_sdl(int nb_free, SDL_Texture* to_free[], SDL_Window* window, SDL_Rende
         SDL_DestroyRenderer(render);
     if (window != NULL)
         SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
     exit(EXIT_SUCCESS);
 }
@@ -63,6 +65,11 @@ void run_game(){
         fprintf(stderr, "[*] Failed to intialise SDL2: %s\n", SDL_GetError());
     }
     printf("[*] Sucessfully initialised SDL2\n");
+
+    if(TTF_Init() != 0){
+        fprintf(stderr, "[*] Failed to intialise TTF: %s\n", SDL_GetError());
+    }
+    printf("[*] Sucessfully initialised TTF\n");
 
     SDL_Window* window = SDL_CreateWindow("Igel Ärgern", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (window == NULL){
@@ -122,7 +129,6 @@ void run_game(){
     bool quit = false;
 
     int resultat_de = de();
-    printf("[*] dé : %d\n", resultat_de + 1);
 
     char player = 'a';
     if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
@@ -185,7 +191,6 @@ void run_game(){
                                 }
                                 round = 0;
                                 asked = true;
-                                printf("[*] dé : %d\n", resultat_de + 1);
                             }
                             break;
                     }
@@ -194,7 +199,7 @@ void run_game(){
                     quit = true;
                     break;
             }
-            display_board(&board, window, renderer, row, line, images_tab, player);
+            display_board(&board, window, renderer, row, line, images_tab, player, resultat_de, asked, round);
         }
     }   
 
@@ -230,7 +235,7 @@ void clear_renderer(SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* img
 
 
 void display_hedgehog(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i, int j, SDL_Texture* imgs[], int pos){
-    static const int step = 15;
+    static int step = 15;
 
     SDL_Rect hg_pos;
     hg_pos.h = HEDGEHOG_HEIGHT;
@@ -257,13 +262,41 @@ void display_token(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int i
 }
 
 
-void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* imgs[], const char* text, int i, int j){
+void display_text(board_t* b, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* imgs[], const char* text, int i, int j, int h, int w){
+    TTF_Font* font = TTF_OpenFont(FONT_FILE, 20);
+    static SDL_Color black = {0, 0, 0, 255};
+    if (font == NULL){
+        fprintf(stderr, "[*] Failed to open the font: %s\n", TTF_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }  
+
+    SDL_Surface* text_surface = TTF_RenderText_Solid(font, text, black);
+    if (text_surface == NULL){
+        fprintf(stderr, "[*] Failed bind text to surface: %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
+    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    if (text_texture == NULL){
+        SDL_FreeSurface(text_surface);
+        fprintf(stderr, "[*] Failed bind a texture to the surface: %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
+    SDL_FreeSurface(text_surface);
+
+    SDL_Rect texRect;
+    texRect.h = h;
+    texRect.w = w;
+
+    texRect.x = j;
+    texRect.y = i;
+    if (SDL_RenderCopy(renderer, text_texture, NULL, &texRect)){
+        fprintf(stderr, "[*] Failed to render the text : %s\n", SDL_GetError());
+        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    }
 }
 
 
-void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player){
-    static const SDL_Color burgundy_color = {129, 17, 17, 255};
-
+void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int cursor_row, int cursor_line, SDL_Texture* imgs[], char player, int resultat_de, bool asked, int round){
     clear_renderer(renderer, window, imgs);
 
     if (SDL_RenderCopy(renderer, imgs[0], NULL, NULL) != 0){
@@ -288,10 +321,18 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
         }
     }
     display_token(b, window, renderer, cursor_line, cursor_row, imgs, player);
+    
+    char t_rd[2];
+    sprintf(t_rd, "%d", resultat_de + 1);
 
-    if  (SDL_SetRenderDrawColor(renderer, burgundy_color.r, burgundy_color.g, burgundy_color.b, burgundy_color.a) != 0){
-        fprintf(stderr, "[*] Failed to set the color : %s\n", SDL_GetError());
-        exit_sdl(NB_IMAGES, imgs, window, renderer);
+    if (asked){
+        display_text(b, window, renderer, imgs, "Type 'n' to skip line movement", 50, 300, 60, 1000);
     }
+    else if(round == 1){
+        display_text(b, window, renderer, imgs, "Move an hedgehog on the line selected by the dice", 50, 300, 60, 1000);
+    }
+
+    display_text(b, window, renderer, imgs, t_rd, 100, 100, 100, 100);
+
     SDL_RenderPresent(renderer);
 }
