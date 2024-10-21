@@ -34,11 +34,10 @@ bool canDoubleGame(board_t* b){
 }
 
 void clear_board(board_t* b){
-    char ignore;
     for(int line = 0; line < NB_LINE; line++){
         for(int row = 0; row < NB_ROW; row++){
             while(board_height(b, line, row) != 0){
-                ignore = board_pop(b, line, row);
+                board_pop(b, line, row);
             }
         }
     }
