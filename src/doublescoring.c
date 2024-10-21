@@ -14,7 +14,7 @@ void updateScore(int* herissonsFinis, int* scoreJoueurs, int doubleFactor, int s
     if(surrender != 0){
         int loser = surrender - 1;
         int winner = 1 - loser;
-        scoreJoueurs[loser] -= doubleFactor - 1;
+        scoreJoueurs[loser] -= doubleFactor + 1;
         scoreJoueurs[winner] += doubleFactor + 1;
     }
     else if(herissonsFinis[0] == herissonsFinis[1] && herissonsFinis[0] == (NB_HERISSONS - 1)){
@@ -22,7 +22,13 @@ void updateScore(int* herissonsFinis, int* scoreJoueurs, int doubleFactor, int s
         scoreJoueurs[1] += (1 << doubleFactor);
     }
     else{
-        int winner = (herissonsFinis[0] == NB_HERISSONS - 1)?0:1;
+        int winner;
+        if (herissonsFinis[0] == NB_HERISSONS - 1){
+            winner = 0;
+        }
+        else{
+            winner = 1;
+        }
         int loser = 1 - winner;
         scoreJoueurs[winner] += (1 << doubleFactor);
         scoreJoueurs[loser] -= herissonsFinis[loser]*(1 << doubleFactor);
@@ -54,7 +60,9 @@ int play_double_game(board_t* b, int objectif_points){
     int doubleFactor;
     bool is_there_winner;
     int surrender;
+    int last_player_that_doubled;
     while(scoreJoueurs[0] < objectif_points && scoreJoueurs[1] < objectif_points){
+        last_player_that_doubled = 2; //valeur arbitraire, l'important est qu'elle ne soit ni 0 ni 1
         doubleFactor = 0;
         surrender = 0;
         is_there_winner = false;
@@ -65,21 +73,26 @@ int play_double_game(board_t* b, int objectif_points){
         initialize_game(b);
         while(!is_there_winner){
             for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
-                if(canDoubleGame(b)){
+                if(canDoubleGame(b) && (joueur != last_player_that_doubled)){
+                    last_player_that_doubled = joueur;
                     char veut_doubler;
-                    printf("Voulez-vous doubler la mise? La valeur actuelle du jeu est %d: (Y/N)", (1 << doubleFactor));
+                    printf("Voulez-vous doubler la mise? La valeur actuelle du jeu est %d: (Y/N): ", (1 << doubleFactor));
                     scanf("%c", &veut_doubler);
+                    clean_input_buffer();
                     while(veut_doubler != 'N' && veut_doubler != 'Y'){
                         printf("Veuillez donner une réponse valide, Y ou N: ");
                         scanf("%c", &veut_doubler);
+                        clean_input_buffer();
                     }
                     if(veut_doubler == 'Y'){
                         printf("Le joueur %c veut doubler la valeur du jeu ! \n", (char)((int)'a' + joueur));
-                        printf("Joueur %c, souhaitez-vous accepter la nouvelle mise ? (Y/N)", (char)((int)'a' + (1-joueur)));
+                        printf("Joueur %c, souhaitez-vous accepter la nouvelle mise ? (Y/N) ", (char)((int)'a' + (1-joueur)));
                         scanf("%c", &veut_doubler);
+                        clean_input_buffer();
                         while(veut_doubler != 'N' && veut_doubler != 'Y'){
                           printf("Veuillez donner une réponse valide, Y ou N: ");
                           scanf("%c", &veut_doubler);
+                          clean_input_buffer();
                         }
                         if(veut_doubler == 'Y'){
                             doubleFactor++;
@@ -102,8 +115,8 @@ int play_double_game(board_t* b, int objectif_points){
             is_there_winner = is_there_winner || get_winner(herissonsFinis, gagnants);    
         }
         updateScore(herissonsFinis, scoreJoueurs, doubleFactor, surrender);
-        printf("Joueur a: %d points", scoreJoueurs[0]);
-        printf("Joueur b: %d points", scoreJoueurs[1]);
+        printf("Joueur a: %d points\n", scoreJoueurs[0]);
+        printf("Joueur b: %d points\n", scoreJoueurs[1]);
     }
     if(scoreJoueurs[0] == scoreJoueurs[1]){
         return 2;

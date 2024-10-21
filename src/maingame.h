@@ -14,5 +14,6 @@ bool is_coordinate_valid(int ligne, int colonne);
 bool is_ligne_vide(board_t* b, int ligne);
 void tronc_commun(board_t* b, int joueur, int* herissonsFinis);
 void play_game(board_t* b, char* gagnants);
+void clean_input_buffer();
 
 #endif
