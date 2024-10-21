@@ -73,8 +73,8 @@ int play_double_game(board_t* b, int objectif_points){
         initialize_game(b);
         while(!is_there_winner){
             for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
+                printf("> C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
                 if(canDoubleGame(b) && (joueur != last_player_that_doubled)){
-                    last_player_that_doubled = joueur;
                     char veut_doubler;
                     printf("Voulez-vous doubler la mise? La valeur actuelle du jeu est %d: (Y/N): ", (1 << doubleFactor));
                     scanf("%c", &veut_doubler);
@@ -86,7 +86,7 @@ int play_double_game(board_t* b, int objectif_points){
                     }
                     if(veut_doubler == 'Y'){
                         printf("Le joueur %c veut doubler la valeur du jeu ! \n", (char)((int)'a' + joueur));
-                        printf("Joueur %c, souhaitez-vous accepter la nouvelle mise ? (Y/N) ", (char)((int)'a' + (1-joueur)));
+                        printf("Joueur %c, souhaitez-vous accepter la nouvelle mise ? (Y/N): ", (char)((int)'a' + (1-joueur)));
                         scanf("%c", &veut_doubler);
                         clean_input_buffer();
                         while(veut_doubler != 'N' && veut_doubler != 'Y'){
@@ -95,6 +95,7 @@ int play_double_game(board_t* b, int objectif_points){
                           clean_input_buffer();
                         }
                         if(veut_doubler == 'Y'){
+                            last_player_that_doubled = joueur;
                             doubleFactor++;
                             printf("La valeur du jeu est maintenant %d. \n", (1 << doubleFactor));
                             tronc_commun(b, joueur, herissonsFinis);

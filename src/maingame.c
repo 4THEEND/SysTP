@@ -137,7 +137,6 @@ bool peut_joueur_deplacer_ligne(board_t* b, int resulat_de){
 void tronc_commun(board_t* b, int joueur, int* herissonsFinis){
     int resultat_de = de();
     board_print(b, resultat_de);
-    printf("C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
     printf("Vous avez tiré un %d !\n", resultat_de + 1);
     char veut_bouger;
     if(peut_joueur_deplacer(b, (char)((int)'a' + joueur))){
@@ -210,6 +209,7 @@ void play_game(board_t* b, char* gagnants){ //retourne les joueurs gagnants
     }                                        
     while(!get_winner(herissonsFinis, gagnants)){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
+            printf("> C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
             tronc_commun(b, joueur, herissonsFinis); 
         }
 
