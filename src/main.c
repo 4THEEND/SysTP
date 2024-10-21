@@ -46,9 +46,11 @@ int main(int argc, char** argv){
             int objectif_points;
             printf("Saisissez le nombre de points nécessaires pour gagner: ");
             scanf("%d", &objectif_points);
+            clean_input_buffer();
             while(objectif_points <= 0){
                 printf("Veuillez saisir un nombre de points strictement positif: ");
                 scanf("%d", &objectif_points);
+                clean_input_buffer();
             }
             board_t board;
             init_board(&board);
