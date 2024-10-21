@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-//#include "doublescoring.h"
+#include "doublescoring.h"
 
 #define SHELL_KW "shell"
 #define GRAPHICAL_KW "graphical"
@@ -33,7 +33,7 @@ int main(int argc, char** argv){
     else if(strcmp(argv[1], GRAPHICAL_KW) == 0){
         run_game();
     }
-    /* else if(strcmp(argv[1], VARIANT22_KW) == 0){
+    else if(strcmp(argv[1], VARIANT22_KW) == 0){
         if(NB_JOUEURS != 2){
             printf("Désolé, cette variante se joue à deux joueurs. Veuillez changer NB_JOUEURS, défini dans board.h");
         }
@@ -42,20 +42,20 @@ int main(int argc, char** argv){
             printf("Saisissez le nombre de points nécessaires pour gagner: ");
             scanf("%d", &objectif_points);
             while(objectif_points <= 0){
-                printf("Veuillez saisir un nombre de points strictement positif");
+                printf("Veuillez saisir un nombre de points strictement positif: ");
                 scanf("%d", &objectif_points);
             }
             board_t board;
             init_board(&board);
             int winner = play_double_game(&board, objectif_points);
-            if(winner = 2){
+            if(winner == 2){
                 printf("Match nul !");
             }
             else{
                 printf("Le gagnant est le joueur %c !", (char)((int)'a' + winner));
             }
         }
-    } */
+    }
     else{
         printf("Argument invalide!!!\n");
     }
