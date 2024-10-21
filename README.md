@@ -14,6 +14,6 @@ shell is the one enabled by default but can also be called with
 
 The other mode graphical is the same game but with a GUI made with SDL2 and can be called with
 ```
-./igel grpahical
+./igel grphical
 ```
 
