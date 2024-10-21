@@ -9,7 +9,7 @@ LIBS = `sdl2-config --libs --cflags` -lSDL2 -lSDL2_ttf
 
 all : igel
 
-igel : main.o board.o stack.o maingame.o g_interface.o
+igel : main.o board.o stack.o maingame.o g_interface.o doublescoring.o
 	$(CC) $(LFLAGS) $^ $(LIBS) -o $@
 
 prog_test : test.o stack.o
