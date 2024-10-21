@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#define NB_HEDGEHOG_MAX 26
+#define NB_HEDGEHOG_MAX 100
 
 typedef struct{
     int m_pos;
