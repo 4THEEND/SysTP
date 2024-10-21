@@ -1,11 +1,11 @@
 #ifndef STACK_H
 #define STACK_H
 
-#define NB_JOUEURS_MAX 26
+#define NB_HEDGEHOG_MAX 26
 
 typedef struct{
     int m_pos;
-    char m_tab_stack[NB_JOUEURS_MAX];
+    char m_tab_stack[NB_HEDGEHOG_MAX];
 } stack_t;
 
 void push(stack_t* pile, char elt);
