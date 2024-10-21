@@ -31,11 +31,11 @@ int main(int argc, char** argv){
         }
     }
     else if(strcmp(argv[1], GRAPHICAL_KW) == 0){
-        if (NB_LINE == 3 && NB_ROW == 9){
+        if (NB_LINE == 3 && NB_ROW == 9 && NB_JOUEURS < 5){
             run_game();
         }
         else{
-            printf("Le nombre de ligne ou de colonne donné à la commilation n'est pas compatible avec l'interface grapique !! \n");
+            printf("Le nombre de ligne, colonne ou de joueurs donné à la commilation n'est pas compatible avec l'interface grapique !! \n");
         }
     }
     else if(strcmp(argv[1], VARIANT22_KW) == 0){
