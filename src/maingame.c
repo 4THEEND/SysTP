@@ -163,10 +163,12 @@ void tronc_commun(board_t* b, int joueur, int* herissonsFinis){
         scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
         int col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
         clean_input_buffer();
-        while( !(is_coordinate_valid(ligne_herisson - 1, col_herisson - 1)) || !(is_coordinate_valid(ligne_objectif - 1, 0)) 
+        while( !(is_coordinate_valid(ligne_herisson - 1, col_herisson - 1)) 
+            || !(is_coordinate_valid(ligne_objectif - 1, 0)) 
             || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) 
             || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a'))
-            || !(allow_trapped_move(b, ligne_herisson - 1, col_herisson - 1)) ){
+            || !(allow_trapped_move(b, ligne_herisson - 1, col_herisson - 1)) 
+            || !(abs(ligne_herisson - ligne_objectif) <= 1)){
             printf("Veuillez à donner des coordonnées correctes, et choisir un de vos hérissons. \n");
             scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
             col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
