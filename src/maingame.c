@@ -130,76 +130,85 @@ bool peut_joueur_deplacer_ligne(board_t* b, int resulat_de){
 }
 
 
-void play_game(board_t* b, char* gagnants){ //retourne le joueur gagnant
+// Cette partie de la logique du jeu est utilisée tantôt ici comme pour la variante 22.
+// Nous avons donc trouvé pertinent de la séparer afin de pouvoir la réutiliser dans les deux fichiers.
+// Cette fonction demande au joueur les déplacements qu'il souhaite faire, en soignant que l'entrée de l'utilisateur
+// soit correcte.
+void tronc_commun(board_t* b, int joueur, int* herissonsFinis){
+    int resultat_de = de();
+    board_print(b, resultat_de);
+    printf("C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
+    printf("Vous avez tiré un %d !\n", resultat_de + 1);
+    char veut_bouger;
+    if(peut_joueur_deplacer(b, (char)((int)'a' + joueur))){
+        printf("Voulez-vous bouger un hérisson de ligne ? (Y/N): ");
+        scanf("%c", &veut_bouger);
+        clean_input_buffer();
+        while(veut_bouger != 'Y' && veut_bouger != 'N'){
+            printf("Veuillez donner une réponse correcte, Y ou N: ");
+            scanf("%c", &veut_bouger);
+        clean_input_buffer();
+        }
+    }
+    else {
+        printf("Vous ne pouvez changer de ligne aucun hérisson.\n");
+        veut_bouger = 'N';
+    }
+    if(veut_bouger == 'Y'){
+        int ligne_herisson;
+        char col_herisson_tmp;
+        int ligne_objectif;
+        printf("Indiquez la ligne, puis la colonne du herisson que vous souhaitez changer de ligne, ainsi que la ligne ligne_objectif. \n ");
+        printf("Par exemple, pour déplacer le herisson dans la case (3,b) dans la ligne 4, on écrit 3 b 4. \n");
+        scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
+        int col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
+        clean_input_buffer();
+        while( !(is_coordinate_valid(ligne_herisson - 1, col_herisson - 1)) || !(is_coordinate_valid(ligne_objectif - 1, 0)) 
+            || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) 
+            || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a'))
+            || !(allow_trapped_move(b, ligne_herisson - 1, col_herisson - 1)) ){
+            printf("Veuillez à donner des coordonnées correctes, et choisir un de vos hérissons. \n");
+            scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
+            col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
+            clean_input_buffer();
+        }
+        board_pop(b, ligne_herisson - 1, col_herisson - 1);
+        board_push(b, ligne_objectif - 1, col_herisson - 1, (char)((int)'a' + joueur));
+    }
+    if(is_ligne_vide(b, resultat_de)){
+        printf("Vous ne pouvez bouger aucun hérisson, donc vous devez passer votre tour. \n");
+    }
+    else{
+        char colonne_deplace_tmp;
+        printf("Choisissez une colonne (une lettre): ");
+        scanf("%c", &colonne_deplace_tmp);
+        int colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
+        clean_input_buffer();
+        while(!(is_coordinate_valid(0, colonne_deplace - 1)) || board_height(b, resultat_de, colonne_deplace - 1) == 0
+        || !(allow_trapped_move(b, resultat_de, colonne_deplace - 1))){
+            printf("Veuillez saisir une colonne valide non vide sans piège ou avec un piège désactivé: \n");
+            scanf("%c", &colonne_deplace_tmp);
+            colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
+            clean_input_buffer();
+        }
+        char player = board_pop(b, resultat_de, colonne_deplace - 1);
+        board_push(b, resultat_de, colonne_deplace, player);
+        if(colonne_deplace == NB_ROW - 1){
+            herissonsFinis[(int)(player - (char)'a')]++;
+            printf("Un hérisson est arrivé ! \n");
+        }
+    }
+}
+
+
+void play_game(board_t* b, char* gagnants){ //retourne les joueurs gagnants
     int herissonsFinis[NB_JOUEURS];
     for(int i = 0; i < NB_JOUEURS; i++){
         herissonsFinis[i] = 0;
     }                                        
     while(!get_winner(herissonsFinis, gagnants)){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
-            int resultat_de = de();
-            board_print(b, resultat_de);
-            printf("C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
-            printf("Vous avez tiré un %d !\n", resultat_de + 1);
-            char veut_bouger;
-            if(peut_joueur_deplacer(b, (char)((int)'a' + joueur))){
-                printf("Voulez-vous bouger un hérisson de ligne ? (Y/N): ");
-                scanf("%c", &veut_bouger);
-                clean_input_buffer();
-                while(veut_bouger != 'Y' && veut_bouger != 'N'){
-                    printf("Veuillez donner une réponse correcte, Y ou N: ");
-                    scanf("%c", &veut_bouger);
-                   clean_input_buffer();
-                }
-            }
-            else {
-                printf("Vous ne pouvez changer de ligne aucun hérisson.\n");
-                veut_bouger = 'N';
-            }
-            if(veut_bouger == 'Y'){
-                int ligne_herisson;
-                char col_herisson_tmp;
-                int ligne_objectif;
-                printf("Indiquez la ligne, puis la colonne du herisson que vous souhaitez changer de ligne, ainsi que la ligne ligne_objectif. \n ");
-                printf("Par exemple, pour déplacer le herisson dans la case (3,b) dans la ligne 4, on écrit 3 b 4. \n");
-                scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
-                int col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
-                clean_input_buffer();
-                while( !(is_coordinate_valid(ligne_herisson - 1, col_herisson - 1)) || !(is_coordinate_valid(ligne_objectif - 1, 0)) 
-                    || (board_height(b, ligne_herisson - 1, col_herisson - 1) == 0) 
-                    || (board_top(b, ligne_herisson - 1, col_herisson - 1) != (char)(joueur + (int)'a'))
-                    || !(allow_trapped_move(b, ligne_herisson - 1, col_herisson - 1)) ){
-                    printf("Veuillez à donner des coordonnées correctes, et choisir un de vos hérissons. \n");
-                    scanf("%d %c %d", &ligne_herisson, &col_herisson_tmp, &ligne_objectif);
-                    col_herisson = (int)col_herisson_tmp + 1 - (int)'a';
-                    clean_input_buffer();
-                }
-                board_pop(b, ligne_herisson - 1, col_herisson - 1);
-                board_push(b, ligne_objectif - 1, col_herisson - 1, (char)((int)'a' + joueur));
-            }
-            if(is_ligne_vide(b, resultat_de)){
-                printf("Vous ne pouvez bouger aucun hérisson, donc vous devez passer votre tour. \n");
-            }
-            else{
-                char colonne_deplace_tmp;
-                printf("Choisissez une colonne (une lettre): ");
-                scanf("%c", &colonne_deplace_tmp);
-                int colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
-                clean_input_buffer();
-                while(!(is_coordinate_valid(0, colonne_deplace - 1)) || board_height(b, resultat_de, colonne_deplace - 1) == 0
-                || !(allow_trapped_move(b, resultat_de, colonne_deplace - 1))){
-                    printf("Veuillez saisir une colonne valide non vide sans piège ou avec un piège désactivé: \n");
-                    scanf("%c", &colonne_deplace_tmp);
-                    colonne_deplace = (int)colonne_deplace_tmp + 1 - (int)'a';
-                    clean_input_buffer();
-                }
-                char player = board_pop(b, resultat_de, colonne_deplace - 1);
-                board_push(b, resultat_de, colonne_deplace, player);
-                if(colonne_deplace == NB_ROW - 1){
-                    herissonsFinis[(int)(player - (char)'a')]++;
-                    printf("Un hérisson est arrivé ! \n");
-                }
-            }
+            tronc_commun(b, joueur, herissonsFinis); 
         }
 
     }
