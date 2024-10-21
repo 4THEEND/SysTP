@@ -95,6 +95,9 @@ int play_double_game(board_t* b, int objectif_points){
                         tronc_commun(b, joueur, herissonsFinis);
                     }
                 }
+                else{
+                    tronc_commun(b, joueur, herissonsFinis);
+                }
             }
             is_there_winner = is_there_winner || get_winner(herissonsFinis, gagnants);    
         }
