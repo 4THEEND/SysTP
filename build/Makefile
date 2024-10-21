@@ -1,6 +1,7 @@
 SRC = ../src
 
 CC = gcc
+TIDY = clang-tidy
 
 CFLAGS = -Wall -Wextra -Wno-unused-parameter
 LFLAGS = -g
@@ -18,7 +19,7 @@ prog_test : test.o stack.o
 	$(CC) $(CFLAGS) -c $<
 
 
-.PHONY : clear run test
+.PHONY : clear run test tidy
 
 clear :
 	rm -f *.o prog prog_test
@@ -28,3 +29,6 @@ run : prog
 
 test : prog_test
 	./prog_test
+
+tidy :
+	$(TIDY) --config-file=clang-tidy -header-filter=.* $(SRC)/* -- $(CFLAGS)
