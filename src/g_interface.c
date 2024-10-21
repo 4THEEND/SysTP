@@ -7,6 +7,7 @@
 #include <assert.h>
 
 
+// Ensure that the player returned can play
 char getNextPLayerVerified(char player, board_t* b, int* resultat_de_p, int* round){
     *resultat_de_p = de();
     char np = getNextPlayer(player, round);
@@ -141,6 +142,12 @@ void run_game(){
         2 : the final round is done
     */
 
+   int way = 1;
+   /* To indicate in which way should the hedgehog move
+        1 : down
+        -1 : up
+   */
+
    bool asked = true;
 
     while(!quit)
@@ -167,6 +174,16 @@ void run_game(){
                             if (row < NB_ROW - 1)
                                 row++;
                             break;
+                        case SDLK_u:
+                            if (asked){
+                                way = 0;
+                            }
+                            break;
+                        case SDLK_d:
+                            if (asked){
+                                way = 1;
+                            }
+                            break;
                         case SDLK_n:
                             if (asked){
                                 if (!peut_joueur_deplacer_ligne(&board, resultat_de))
@@ -176,7 +193,7 @@ void run_game(){
                             }
                             break;
                         case SDLK_SPACE:
-                            if (phase == 0 && line + 1 < NB_LINE){
+                            if (phase == 0 && 0 < line + way && line + way < NB_LINE){
                                 if (board_height(&board, line, row) > 0 && board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row)){
                                     if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
                                         player = getNextPLayerVerified(player, &board, &resultat_de, &round);
