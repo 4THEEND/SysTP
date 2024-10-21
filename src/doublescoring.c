@@ -76,7 +76,7 @@ int play_double_game(board_t* b, int objectif_points){
                     }
                     if(veut_doubler == 'Y'){
                         printf("Le joueur %c veut doubler la valeur du jeu ! \n", (char)((int)'a' + joueur));
-                        printf("Joueur %c, souhaitez-vous accepter la nouvelle mise ? (Y/N)", (char)(int'a' + (1-joueur)));
+                        printf("Joueur %c, souhaitez-vous accepter la nouvelle mise ? (Y/N)", (char)((int)'a' + (1-joueur)));
                         scanf("%c", &veut_doubler);
                         while(veut_doubler != 'N' && veut_doubler != 'Y'){
                           printf("Veuillez donner une réponse valide, Y ou N: ");
