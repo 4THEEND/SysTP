@@ -176,7 +176,7 @@ void run_game(){
                             break;
                         case SDLK_u:
                             if (asked){
-                                way = 0;
+                                way = -1;
                             }
                             break;
                         case SDLK_d:
@@ -193,8 +193,8 @@ void run_game(){
                             }
                             break;
                         case SDLK_SPACE:
-                            if (phase == 0 && 0 < line + way && line + way < NB_LINE){
-                                if (board_height(&board, line, row) > 0 && board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + 1, row)){
+                            if (phase == 0 && 0 <= line + way && line + way < NB_LINE){
+                                if (board_height(&board, line, row) > 0 && board_top(&board, line, row) == player && move_hedgehog(&board, line, row, line + way, row)){
                                     if (!peut_joueur_deplacer_ligne(&board, resultat_de)) 
                                         player = getNextPLayerVerified(player, &board, &resultat_de, &round);
                                     phase++;
@@ -349,7 +349,7 @@ void display_board(board_t* b, SDL_Window* window, SDL_Renderer* renderer, int c
     display_token(b, window, renderer, cursor_line, cursor_row, imgs, player);
 
     if (asked){
-        display_text(b, window, renderer, imgs, "Type 'n' to skip line movement", 50, 300, 60, 1000);
+        display_text(b, window, renderer, imgs, "Type 'n' to skip line movement, 'u' to move an hedgehog up and 'd' for down", 50, 300, 60, 1100);
     }
     else if(phase == 1){
         display_text(b, window, renderer, imgs, "Move an hedgehog on the line selected by the dice", 50, 300, 60, 1000);

@@ -2,7 +2,7 @@
 #include <assert.h>
 
 void push(stack_t* pile, char elt){
-    assert(pile->m_pos < NB_JOUEURS_MAX);
+    assert(pile->m_pos < NB_HEDGEHOG_MAX);
     pile->m_tab_stack[++pile->m_pos] = elt;
 }
 
