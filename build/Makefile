@@ -7,9 +7,9 @@ CFLAGS = -Wall -Wextra -Wno-unused-parameter
 LFLAGS = -g
 LIBS = `sdl2-config --libs --cflags` -lSDL2 -lSDL2_ttf
 
-all : prog
+all : igel
 
-prog : main.o board.o stack.o maingame.o g_interface.o
+igel : main.o board.o stack.o maingame.o g_interface.o
 	$(CC) $(LFLAGS) $^ $(LIBS) -o $@
 
 prog_test : test.o stack.o
@@ -22,10 +22,10 @@ prog_test : test.o stack.o
 .PHONY : clear run test tidy
 
 clear :
-	rm -f *.o prog prog_test
+	rm -f *.o igel prog_test
 
-run : prog
-	./prog
+run : igel
+	./igel
 
 test : prog_test
 	./prog_test
