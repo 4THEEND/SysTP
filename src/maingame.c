@@ -43,27 +43,17 @@ void initialize_game(board_t* b) {
 }
 
 
-//Prend en entrée un tableau indiquant, pour chaque joueur, le nombre de ses hérissons qui sont
-//arrivés à la fin, et un tableau de taille NB_JOUEURS initialisé à '0' qui sera utilisé pour le retour.
-// Retourne vrai s'il y a des gagnants, en indiquant lequels dans [gagnants], soit faux s'il y en a pas.
-bool get_winner(int* herissonsFinis, char* gagnants){
-    bool are_there_winners = false;
-    int gagnants_position = 0;
-    for(int i = 0; i < NB_JOUEURS; i++){
-        if(herissonsFinis[i] == NB_HERISSONS - 1){
-            gagnants[gagnants_position] = (char)((int)'a' + i);
-            gagnants_position++;
-            are_there_winners = true;
-        }
-    }
-    return are_there_winners;
-}
 
 int comp_int_tuple(const void* a, const void* b){ // decreasing sort
     tuple t_a = *(const tuple*)a;
     tuple t_b = *(const tuple*)b;
     return t_b.first - t_a.first;
 }
+
+//Prend en entrée un tableau indiquant, pour chaque joueur, le nombre de ses hérissons qui sont
+//arrivés à la fin, et un tableau de taille NB_JOUEURS initialisé à '0' qui sera utilisé pour le retour.
+// Retourne vrai s'il y a des gagnants, en renvoyant le classement dans [gagnants],
+// soit faux s'il y en a pas.
 
 bool get_winner_right(int* herissonsFinis, char* gagnants){
     bool are_there_winners = false;
