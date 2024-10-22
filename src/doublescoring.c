@@ -98,6 +98,7 @@ int play_double_game(board_t* b, int objectif_points){
                             last_player_that_doubled = joueur;
                             doubleFactor++;
                             printf("La valeur du jeu est maintenant %d. \n", (1 << doubleFactor));
+                            printf("\n > C'est toujours le tour au joueur %c !\n", (char)((int)'a' + joueur));
                             tronc_commun(b, joueur, herissonsFinis);
                         }
                         else{

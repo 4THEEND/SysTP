@@ -66,7 +66,7 @@ int main(int argc, char** argv){
             init_board(&board);
             int winner = play_double_game(&board, objectif_points);
             if(winner == 2){
-                printf("Match nul !");
+                printf("Match nul !\n");
             }
             else{
                 printf("Le gagnant est le joueur %c !", (char)((int)'a' + winner));
