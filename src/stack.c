@@ -1,6 +1,10 @@
 #include "stack.h"
 #include <assert.h>
 
+
+/***********
+This file implements a stack.
+*****/
 void push(stack_t* pile, char elt){
     assert(pile->m_pos < NB_HEDGEHOG_MAX);
     pile->m_tab_stack[++pile->m_pos] = elt;

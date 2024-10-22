@@ -11,6 +11,11 @@
 #define GRAPHICAL_KW "graphical"
 #define VARIANT22_KW "variant"
 
+/************* 
+This is the main file of the project. It decides which version of the game to call based on user input. 
+Compiles by running make in the build directory. Executable is called ./igel
+**************/
+
 int main(int argc, char** argv){
     srand(time(NULL));
 

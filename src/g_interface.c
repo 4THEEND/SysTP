@@ -6,7 +6,9 @@
 #include <stdbool.h>
 #include <assert.h>
 
-
+/******************
+This file implements a graphical interface for the game, accessible by executing ./igel graphical
+*********/
 // Ensure that the player returned can play
 char getNextPLayerVerified(char player, board_t* b, int* resultat_de_p, int* round){
     *resultat_de_p = de();

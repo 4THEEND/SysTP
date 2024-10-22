@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+/************* 
+This file implements the canonical version of the game as well as some auxiliary fonctions that will be useful elsewhere.
+Will be used by executing ./igel
+**************/
+
+
 typedef struct{
     int first;
     int second;

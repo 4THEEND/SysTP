@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <ctype.h>
 
-
+/****************
+This file implements fonctions useful for printing and interacting with the board
+***********/
 void init_board(board_t* b){
     const int traps_coords[NB_TRAP][2] = {{0, 3}, {1, 6}, {2, 4}, {3, 5}, {4, 2}, {5, 7}};
     for (int i = 0; i < NB_LINE; i++){

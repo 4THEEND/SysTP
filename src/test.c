@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <time.h>
 
+/********** 
+Basic tests. Runs by executing make test.
+*******/
 
 void test_stack(void){
     stack_t s1 = {.m_pos = -1};

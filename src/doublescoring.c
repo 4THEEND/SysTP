@@ -3,9 +3,11 @@
 #include "maingame.h"
 #include "doublescoring.h"
 
-/* This version is a direct implementation of variant 22 as found in 
+/************* 
+ This version is a direct implementation of variant 22 as found in 
 https://mquinson.frama.io/ensr-arcsys1/IgelArgernVariants.html. It must be played with
-2 players.  */
+2 players. To execute, type ./igel variant
+**************/
 
 
 // surrender vaut 0 si aucun joueur n'a refusé une offre de doublage, 1 si le joueur 'a' a
