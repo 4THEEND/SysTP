@@ -73,7 +73,7 @@ int play_double_game(board_t* b, int objectif_points){
         initialize_game(b);
         while(!is_there_winner){
             for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
-                printf("> C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
+                printf("\n > C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
                 if(canDoubleGame(b) && (joueur != last_player_that_doubled)){
                     char veut_doubler;
                     printf("Voulez-vous doubler la mise? La valeur actuelle du jeu est %d: (Y/N): ", (1 << doubleFactor));

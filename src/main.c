@@ -20,27 +20,37 @@ int main(int argc, char** argv){
         for(int i = 0; i < NB_JOUEURS; i++){
             gagnants[i] = '0';
         }        
+        int herissonsFinis[NB_JOUEURS];
+        for(int i = 0; i < NB_JOUEURS; i++){
+            herissonsFinis[i] = 0;
+        }   
         init_board(&board);
         initialize_game(&board);
-        play_game(&board, gagnants);
-        printf("Les joueurs suivants ont remporté la partie: \n");
-        for(int i = 0; i < NB_JOUEURS; i++){
-            if(gagnants[i] != '0'){
-                printf("- Le joueur %c \n", gagnants[i]);
+        play_game(&board, gagnants, herissonsFinis);
+        printf("Les classement final est: \n");
+        int ranking = 1;
+        int current_score = herissonsFinis[0];
+        for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
+            if(gagnants[joueur] != '0'){
+                if(current_score != herissonsFinis[joueur]){
+                    current_score = herissonsFinis[joueur];
+                    ranking++;
+                }
+                printf("%d - Le joueur %c \n", ranking, gagnants[joueur]);
             }
         }
     }
     else if(strcmp(argv[1], GRAPHICAL_KW) == 0){
-        if (NB_LINE == 3 && NB_ROW == 9 && NB_JOUEURS < 5){
+        if (NB_LINE == 6 && NB_ROW == 9 && NB_JOUEURS < 5){
             run_game();
         }
         else{
-            printf("Le nombre de ligne, colonne ou de joueurs donné à la commilation n'est pas compatible avec l'interface grapique !! \n");
+            printf("Le nombre de ligne, colonne ou de joueurs donné à la compilation n'est pas compatible avec l'interface graphique !! \n");
         }
     }
     else if(strcmp(argv[1], VARIANT22_KW) == 0){
         if(NB_JOUEURS != 2){
-            printf("Désolé, cette variante se joue à deux joueurs. Veuillez changer NB_JOUEURS, défini dans board.h");
+            printf("Désolé, cette variante se joue à deux joueurs. Veuillez changer NB_JOUEURS, défini dans board.h\n");
         }
         else{
             int objectif_points;

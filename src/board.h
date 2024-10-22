@@ -7,7 +7,7 @@
 #define NB_LINE 3
 #define NB_ROW 3
 #define NB_TRAP 6
-#define NB_JOUEURS 2
+#define NB_JOUEURS 4
 #define NB_HERISSONS 4
 
 typedef struct{

@@ -196,20 +196,16 @@ void tronc_commun(board_t* b, int joueur, int* herissonsFinis){
         board_push(b, resultat_de, colonne_deplace, player);
         if(colonne_deplace == NB_ROW - 1){
             herissonsFinis[(int)(player - (char)'a')]++;
-            printf("Un hérisson est arrivé ! \n");
+            printf("Le herisson numéro %d du joueur %c est arrivé ! \n", herissonsFinis[(int)(player - (char)'a')], player);
         }
     }
 }
 
 
-void play_game(board_t* b, char* gagnants){ //retourne les joueurs gagnants
-    int herissonsFinis[NB_JOUEURS];
-    for(int i = 0; i < NB_JOUEURS; i++){
-        herissonsFinis[i] = 0;
-    }                                        
-    while(!get_winner(herissonsFinis, gagnants)){
+void play_game(board_t* b, char* gagnants, int* herissonsFinis){ //retourne les joueurs gagnant                                     
+    while(!(get_winner_right(herissonsFinis, gagnants))){
         for(int joueur = 0; joueur < NB_JOUEURS; joueur++){
-            printf("> C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
+            printf("\n > C'est le tour au joueur %c !\n", (char)((int)'a' + joueur));
             tronc_commun(b, joueur, herissonsFinis); 
         }
 
